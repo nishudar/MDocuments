@@ -1,0 +1,35 @@
+### Set the userId variable
+@userId = 123e4567-e89b-12d3-a456-426614174000
+
+### Upload a file
+POST https://localhost:7063/v1/file/upload
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="fileName"
+
+exampleFileName.txt
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="fileType"
+
+text/plain
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="userId"
+
+{{userId}}
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="file"; filename="example.txt"
+Content-Type: text/plain
+< ./Program.cs
+--boundary--
+
+### Download a file by ID
+GET https://localhost:7063/v1/file/{{fileId}}
+
+
+### Get file metadata (optionally filtered by user ID)
+GET https://localhost:7063/v1/file/metadata?userId={{userId}}
+
+
+### Track file status by tracking ID
+GET https://localhost:7063/v1/file/track/{{trackingId}}
