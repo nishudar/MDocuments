@@ -13,4 +13,4 @@
 ## System schema
 
 Here is the system architecture. The grayed out services were planned but not implemented
-![Architecture](docs/schema.png)
+![Architecture]([docs/schema.png](https://raw.githubusercontent.com/nishudar/MDocuments/refs/heads/main/docs/schema.jpg)
