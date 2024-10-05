@@ -80,6 +80,8 @@ services:
     networks:
       - md_services_network
     restart: unless-stopped
+    depends_on:
+      - storage-service
   
   notification-hub:
     build:
