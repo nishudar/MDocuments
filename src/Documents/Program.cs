@@ -34,11 +34,8 @@ var app = builder.Build();
 
 app.UseCommonMiddleware();
 
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+app.UseSwagger();
+app.UseSwaggerUI();
 
 app.UseHttpsRedirection();
 var operationTimeout = new TimeSpan(0, 0, 1, 0);
