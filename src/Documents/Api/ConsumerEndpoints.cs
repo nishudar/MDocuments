@@ -1,7 +1,8 @@
-using Common.DomainEvents;
 using Documents.Api.Models;
-using Documents.Application.Interfaces;
+using Documents.Application.Commands;
+using Documents.Application.Queries;
 using Documents.Domain.Entities;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Documents.Api;
@@ -13,11 +14,10 @@ public static class CustomersEndpoints
     public static void MapConsumerEndpoints(this IEndpointRouteBuilder app, TimeSpan timeout)
     {
         app.MapGet("/v1/document/customer", async (
-                IDocumentInventoryRepository repository) =>
+                IMediator mediator) =>
             {
                 using var cts = new CancellationTokenSource(timeout);
-                var documentInventory = await repository.GetDocumentInventory(cts.Token);
-                var customers = documentInventory.GetCustomers();
+                var customers = await mediator.Send(new GetCustomersQuery(), cts.Token);
 
                 return Results.Ok(customers);
             })
@@ -37,22 +37,13 @@ public static class CustomersEndpoints
         app.MapPost("/v1/documents/users/{userId:guid}/customers", async (
                 [FromBody] AssignCustomerRequest customer,
                 [FromRoute] Guid userId,
-                IDocumentInventoryRepository repository,
-                IDomainEventDispatcher dispatcher
+                IMediator mediator
             ) =>
             {
                 using var cts = new CancellationTokenSource(timeout);
-                var documentInventory = await repository.GetDocumentInventory(cts.Token);
-                var id = Guid.NewGuid();
-                documentInventory.AssignCustomer(new Customer
-                {
-                    Id = id,
-                    Name = customer.Name,
-                    AssignedUserId = userId
-                });
-                await dispatcher.DispatchEvents(documentInventory.BusinessEvents, cts.Token);
+                var result = await mediator.Send(new AssignCustomerCommand(customer.Name, userId), cts.Token);
                 
-                return Results.Ok(new IdResponse(id));
+                return Results.Ok(new IdResponse(result.Id));
             })
             .DisableAntiforgery()
             .WithName("assignCustomer")

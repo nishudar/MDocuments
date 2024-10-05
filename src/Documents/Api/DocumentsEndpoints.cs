@@ -1,7 +1,8 @@
-using Common.DomainEvents;
 using Documents.Api.Models;
-using Documents.Application.Interfaces;
+using Documents.Application.Commands;
+using Documents.Application.Queries;
 using Documents.Domain.Entities;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Documents.Api;
@@ -13,37 +14,18 @@ public static class DocumentEndpoints
     {
         app.MapPost("/v1/document/files/upload", async (
                 [FromForm] DocumentUploadModel upload,
-                IDocumentInventoryRepository repository,
-                IDomainEventDispatcher dispatcher,
-                IStorageService storageService
+                IMediator mediator
             ) =>
             {
                 using var cts = new CancellationTokenSource(timeout);
-                var documentInventory = await repository.GetDocumentInventory(cts.Token);
-                var document = new Document
-                {
-                    Id = Guid.NewGuid(),
-                    Name = upload.FileName,
-                    UserId = upload.UserId,
-                    CustomerId = upload.CustomerId,
-                    DocumenType = upload.DocumentType,
-                };
-                documentInventory.ValidateDocument(document);
-                var uploadResponse = await storageService.UploadFile(
-                    upload.File.OpenReadStream(),
-                    upload.FileName,
-                    upload.DocumentType,
-                    upload.UserId,
-                    cts.Token
-                );
-                document.SetFileId(uploadResponse.FileId);
-                documentInventory.AddDocument(document);
-                await dispatcher.DispatchEvents(documentInventory.BusinessEvents, cts.Token);
+                var result = await mediator.Send(new UploadDocumentCommand(upload), cts.Token);
+                
+                return Results.Ok(new IdResponse(result));
             })
             .DisableAntiforgery()
             .WithName("uploadDocument")
             .WithTags(TagDocuments)
-            .Produces(StatusCodes.Status200OK)
+            .Produces<IdResponse>()
             .Produces(StatusCodes.Status400BadRequest)
             .WithOpenApi(operation =>
             {
@@ -55,21 +37,13 @@ public static class DocumentEndpoints
 
         app.MapGet("/v1/documents/files/download/{documentId:guid}", async (
                 [FromRoute] Guid documentId,
-                IDocumentInventoryRepository repository,
-                IStorageService storageService
+                IMediator mediator
             ) =>
             {
                 using var cts = new CancellationTokenSource(timeout);
-                var documentInventory = await repository.GetDocumentInventory(cts.Token);
-                var document = documentInventory.GetDocument(documentId);
-                if (document is null && document is {FileId: null})
-                    return Results.NotFound();
-                var file = await storageService.DownloadFileAsync(document!.FileId!.Value, cts.Token);
-                return file switch
-                {
-                    null => Results.NotFound(),
-                    _ => Results.File(file.FileStream, file.ContentType, file.FileName)
-                };
+                var file =  await mediator.Send(new DownloadFileQuery(documentId), cts.Token);
+                
+                Results.File(file.FileStream, file.ContentType, file.FileName);
             })
             .DisableAntiforgery()
             .WithName("downloadDocument")

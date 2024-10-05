@@ -1,7 +1,8 @@
-using Common.DomainEvents;
 using Documents.Api.Models;
-using Documents.Application.Interfaces;
+using Documents.Application.Commands;
+using Documents.Application.Queries;
 using Documents.Domain.Entities;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Documents.Api;
@@ -13,11 +14,10 @@ public static class UserEndpoints
     public static void MapUserEndpoints(this IEndpointRouteBuilder app, TimeSpan timeout)
     {
         app.MapGet("/v1/document/user", async (
-                IDocumentInventoryRepository repository) =>
+                IMediator mediator) =>
             {
                 using var cts = new CancellationTokenSource(timeout);
-                var documentInventory = await repository.GetDocumentInventory(cts.Token);
-                var users = documentInventory.GetUsers();
+                var users = await mediator.Send(new GetBusinessUsersQuery(), cts.Token);
 
                 return Results.Ok(users);
             })
@@ -35,25 +35,17 @@ public static class UserEndpoints
 
         app.MapPost("/v1/document/user", async (
                 [FromBody] AddUserModel businessUser,
-                IDocumentInventoryRepository repository,
-                IDomainEventDispatcher dispatcher) =>
+                IMediator mediator) =>
             {
                 using var cts = new CancellationTokenSource(timeout);
-                var documentInventory = await repository.GetDocumentInventory(cts.Token);
-                var id = Guid.NewGuid();
-                documentInventory.SetBusinessUser(new BusinessUser
-                {
-                    Id = id,
-                    Name = businessUser.Name
-                });
-                await dispatcher.DispatchEvents(documentInventory.BusinessEvents, cts.Token);
+                var user = await mediator.Send(new AddBusinessUserCommand(businessUser.Name), cts.Token);
 
-                return Results.Ok(new IdResponse(id));
+                return Results.Ok(new IdResponse(user.Id));
             })
             .DisableAntiforgery()
             .WithName("addUser")
             .WithTags(TagBusinessUsers)
-            .Produces<IdResponse>(StatusCodes.Status200OK)
+            .Produces<IdResponse>()
             .Produces(StatusCodes.Status400BadRequest)
             .WithOpenApi(operation =>
             {
@@ -62,21 +54,14 @@ public static class UserEndpoints
                 return operation;
             });
 
-        app.MapPatch("/v1/document/user/{id:guid}", async (
+        app.MapPatch("/v1/document/user/{userId:guid}", async (
                 [FromBody] PatchUserRequest businessUser,
-                IDocumentInventoryRepository repository,
-                IDomainEventDispatcher dispatcher,
-                Guid id) =>
+                IMediator mediator,
+                Guid userId) =>
             {
                 using var cts = new CancellationTokenSource(timeout);
-                var documentInventory = await repository.GetDocumentInventory(cts.Token);
-                documentInventory.SetBusinessUser(new BusinessUser
-                {
-                    Id = id,
-                    Name = businessUser.Name
-                });
-                await dispatcher.DispatchEvents(documentInventory.BusinessEvents, cts.Token);
-
+                await mediator.Send(new UpdateBusinessUserCommand(userId, businessUser.Name), cts.Token);
+                
                 return Results.NoContent();
             })
             .DisableAntiforgery()

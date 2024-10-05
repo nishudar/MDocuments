@@ -1,7 +1,10 @@
 using Common.DomainEvents;
+using Documents.Application.Commands;
 using Documents.Application.Interfaces;
+using Documents.Application.Queries;
 using Documents.Domain.Entities;
 using Documents.Domain.ValueTypes;
+using MediatR;
 
 namespace Documents.Api;
 
@@ -12,11 +15,10 @@ public static class ProcessEndpoints
     public static void MapProcessEndpoints(this IEndpointRouteBuilder app, TimeSpan timeout)
     {
         app.MapGet("/v1/document/process", async (
-                IDocumentInventoryRepository repository) =>
+                IMediator mediator) =>
             {
                 using var cts = new CancellationTokenSource(timeout);
-                var documentInventory = await repository.GetDocumentInventory(cts.Token);
-                var processes = documentInventory.GetProcesses();
+                var processes = await mediator.Send(new GetProcessesQuery(), cts.Token);
 
                 return Results.Ok(processes);
             })
@@ -31,18 +33,14 @@ public static class ProcessEndpoints
                 operation.Description = "Get list of processes and associated data";
                 return operation;
             });
-
         
         app.MapPost("/v1/documents/{userId:guid}/{customerId:guid}/abandon", async (
                 Guid userId,
                 Guid customerId,
-                IDocumentInventoryRepository repository,
-                IDomainEventDispatcher dispatcher) =>
+                IMediator mediator) =>
             {
                 using var cts = new CancellationTokenSource(timeout);
-                var documentInventory = await repository.GetDocumentInventory(cts.Token);
-                documentInventory.AbandonProcess(userId, customerId);
-                await dispatcher.DispatchEvents(documentInventory.BusinessEvents, cts.Token);
+                await mediator.Send(new AbandonProcessCommand(userId, customerId), cts.Token);
 
                 return Results.NoContent();
             })
@@ -63,15 +61,12 @@ public static class ProcessEndpoints
         app.MapPost("/v1/documents/{userId:guid}/{customerId:guid}/start", async (
                 Guid userId,
                 Guid customerId,
-                IDocumentInventoryRepository repository,
-                IDomainEventDispatcher dispatcher) =>
+                IMediator mediator) =>
             {
                 using var cts = new CancellationTokenSource(timeout);
-                var documentInventory = await repository.GetDocumentInventory(cts.Token);
-                var process = documentInventory.StartProcess(userId, customerId);
-                await dispatcher.DispatchEvents(documentInventory.BusinessEvents, cts.Token);
+                var report = await mediator.Send(new StartProcessCommand(userId, customerId), cts.Token);
 
-                return Results.Ok(documentInventory.GetReport(process.Id));
+                return Results.Ok(report);
             })
             .DisableAntiforgery()
             .WithName("startProcess")
@@ -89,13 +84,12 @@ public static class ProcessEndpoints
         app.MapPost("/v1/documents/{userId:guid}/{customerId:guid}/finish", async (
                 Guid userId,
                 Guid customerId,
-                IDocumentInventoryRepository repository,
-                IDomainEventDispatcher dispatcher) =>
+                IMediator mediator) =>
             {
                 using var cts = new CancellationTokenSource(timeout);
-                var documentInventory = await repository.GetDocumentInventory(cts.Token);
-                documentInventory.FinishProcess(userId, customerId);
-                await dispatcher.DispatchEvents(documentInventory.BusinessEvents, cts.Token);
+                await mediator.Send(new FinishProcessCommand(userId, customerId), cts.Token);
+                
+                return Results.NoContent();
             })
             .DisableAntiforgery()
             .WithName("finishProcess")
@@ -112,13 +106,10 @@ public static class ProcessEndpoints
 
         app.MapGet("/v1/documents/{processId:guid}/track", async (
                 Guid processId,
-                IDocumentInventoryRepository repository,
-                IDomainEventDispatcher dispatcher) =>
+                IMediator mediator) =>
             {
                 using var cts = new CancellationTokenSource(timeout);
-                var documentInventory = await repository.GetDocumentInventory(cts.Token);
-                var report = documentInventory.GetReport(processId);
-                await dispatcher.DispatchEvents(documentInventory.BusinessEvents, cts.Token);
+                var report = await mediator.Send(new TrackProcessQuery(processId), cts.Token);
                 
                 return Results.Ok(report);
             })

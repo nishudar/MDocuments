@@ -58,13 +58,13 @@ public class DocumentsInventory(
         if(customer is null)
             throw new CustomerDoesNotExistException(customerId);
         if (existingProcess is null)
-            throw new ProcessCannotChangeStatus("not started");
+            throw new ProcessCannotChangeStatusException("not started");
         switch (existingProcess)
         {
             case {Status: ProcessStatus.Abandoned}:
-                throw new ProcessCannotChangeStatus("abandoned", existingProcess.Id);
+                throw new ProcessCannotChangeStatusException("abandoned", existingProcess.Id);
             case {Status: ProcessStatus.Finished}:
-                throw new ProcessCannotChangeStatus("already finished", existingProcess.Id);
+                throw new ProcessCannotChangeStatusException("already finished", existingProcess.Id);
         }
 
         existingProcess.SetStatus(ProcessStatus.Finished);
@@ -82,9 +82,9 @@ public class DocumentsInventory(
         if(customer is null)
             throw new CustomerDoesNotExistException(customerId);
         if (process is null)
-            throw new ProcessCannotChangeStatus("not started");
+            throw new ProcessCannotChangeStatusException("not started");
         if(process.Status is ProcessStatus.Finished)
-            throw new ProcessCannotChangeStatus("already finished", process.Id);
+            throw new ProcessCannotChangeStatusException("already finished", process.Id);
         
         process.SetStatus(ProcessStatus.Abandoned);
         BusinessEvents.Add(new ProcessChangedStatusEvent{Process = process});
@@ -140,11 +140,11 @@ public class DocumentsInventory(
         BusinessEvents.Add(new DocumentAddedEvent {Document = document});
     }
     
-    public ProcessReport? GetReport(Guid processId)
+    public ProcessReport GetReport(Guid processId)
     {
         var process = Processes.Find(process => process.Id == processId);
         if (process is null)
-            return null;
+            throw new NotFoundException("process", processId);
         var user = Users.Find(user => user.Id == process.BusinessUserId);
         var customer = Customers.Find(customer => customer.Id == process.CustomerId);
         var requiredDocumentTypes = process.AllowedDocumentTypes

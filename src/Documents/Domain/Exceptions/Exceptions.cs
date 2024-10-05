@@ -37,9 +37,9 @@ public sealed class ProcessAlreadyStartedException() : BusinessException("Cannot
     }
 }
 
-public sealed class ProcessCannotChangeStatus(string reason) : BusinessException($"Cannot finish process: {reason}")
+public sealed class ProcessCannotChangeStatusException(string reason) : BusinessException($"Cannot finish process: {reason}")
 {
-    public ProcessCannotChangeStatus(string reason, Guid processId) : this(reason)
+    public ProcessCannotChangeStatusException(string reason, Guid processId) : this(reason)
     {
         Data[nameof(processId)] = processId;
     }
@@ -79,5 +79,15 @@ public sealed class DuplicatedDocumentTypeNotAllowedException() : BusinessExcept
     {
         Data[nameof(documentType)] = documentType;
         Data[nameof(processId)] = processId;
+    }
+}
+
+
+public sealed class NotFoundException(string entity) : BusinessException($"Entity not found - id: {entity}")
+{
+    public NotFoundException(string entity, Guid id) : this(entity)
+    {
+        Data[nameof(entity)] = entity;
+        Data[nameof(id)] = id;
     }
 }
