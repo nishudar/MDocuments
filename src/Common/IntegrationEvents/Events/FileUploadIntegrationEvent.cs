@@ -1,5 +1,3 @@
-using Common.Abstracts;
-
 namespace Common.IntegrationEvents.Events;
 
 public record FileUploadIntegrationEvent()  : IIntegrationEvent
@@ -9,6 +7,6 @@ public record FileUploadIntegrationEvent()  : IIntegrationEvent
     public required  string FileType { get; init; }
     public required string UserId { get; init; }
     public required DateTime UploadTime { get; init; }
-    public FileStatus Status { get; set; }
+    public string Status { get; set; }
     public string Topic => IntegrationTopics.FileUploadsTopic;
 }

@@ -1,4 +1,5 @@
 using Common.Abstracts;
+using Documents.Domain.Enums;
 using Documents.Domain.Exceptions;
 using Documents.Domain.ValueTypes;
 

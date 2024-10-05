@@ -1,4 +1,3 @@
-using Common.Abstracts;
 using Common.IntegrationEvents.Events;
 using MediatR;
 using Storage.Application.Interfaces;
@@ -21,7 +20,7 @@ public class UploadFileHandler(IFileMetadataRepository fileMetadata, IFileWriter
             UserId = metadata.UserId.ToString(),
             FileType = metadata.Type,
             UploadTime = metadata.Created,
-            Status = FileStatus.Uploading
+            Status = FileStatus.Uploading.ToString()
         };
         try
         {
@@ -29,12 +28,12 @@ public class UploadFileHandler(IFileMetadataRepository fileMetadata, IFileWriter
             await fileWriter.SaveFile(request.File, metadata, cancellationToken);
             await fileMetadata.SetFileMetadata(metadata with {Status = FileStatus.Completed}, cancellationToken);
             
-            await mediator.Publish(fileUploadEvent with {Status = FileStatus.Completed}, cancellationToken);
+            await mediator.Publish(fileUploadEvent with {Status = FileStatus.Completed.ToString()}, cancellationToken);
         }
         catch (Exception)
         {
             await fileMetadata.SetFileMetadata(metadata with{Status = FileStatus.Failed}, cancellationToken);
-            await mediator.Publish(fileUploadEvent with {Status = FileStatus.Failed}, cancellationToken);
+            await mediator.Publish(fileUploadEvent with {Status = FileStatus.Failed.ToString()}, cancellationToken);
         }
         
         return metadata.Id;

@@ -1,5 +1,6 @@
 using Common.Abstracts;
 using Documents.Domain.Entities;
+using Documents.Domain.Enums;
 using Documents.Domain.Events;
 using Documents.Domain.Exceptions;
 using Documents.Domain.ValueTypes;

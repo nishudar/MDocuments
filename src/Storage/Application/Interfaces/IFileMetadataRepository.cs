@@ -1,4 +1,3 @@
-using Common.Abstracts;
 using Storage.Domain;
 
 namespace Storage.Application.Interfaces;

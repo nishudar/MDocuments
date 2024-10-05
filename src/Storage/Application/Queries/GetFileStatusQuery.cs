@@ -1,6 +1,6 @@
-using Common.Abstracts;
 using MediatR;
 using Storage.Application.Interfaces;
+using Storage.Domain;
 
 namespace Storage.Application.Queries;
 public record GetFileStatusQuery(Guid FileId) : IRequest<FileStatus?>;

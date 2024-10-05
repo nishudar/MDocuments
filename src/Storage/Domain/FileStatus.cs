@@ -1,4 +1,4 @@
-namespace Common.Abstracts;
+namespace Storage.Domain;
 
 public enum FileStatus
 {

@@ -1,4 +1,4 @@
-using Common.Abstracts;
+using Documents.Domain.Enums;
 using Documents.Domain.ValueTypes;
 
 namespace Documents.Domain.Entities;
