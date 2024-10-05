@@ -1,9 +1,10 @@
+using Common.Abstracts;
 using Documents.Domain.Entities;
 using Documents.Domain.ValueTypes;
 
 namespace Documents.Domain.Aggregates;
 
-public interface IDocumentsInventory
+public interface IDocumentsInventory : IAggregate
 {
     Process StartProcess(Guid businessUserId, Guid customerId);
     void FinishProcess(Guid businessUserId, Guid customerId);
@@ -17,5 +18,4 @@ public interface IDocumentsInventory
     IEnumerable<BusinessUser> GetUsers();
     IEnumerable<Customer> GetCustomers();
     IEnumerable<Process> GetProcesses();
-    Guid Id { get; init; }
 }

@@ -7,10 +7,10 @@ using Documents.Domain.ValueTypes;
 namespace Documents.Domain.Aggregates;
 
 public class DocumentsInventory(
-    IEnumerable<BusinessUser> users,
-    IEnumerable<Customer> customers,
-    IEnumerable<DocumentType> documentTypes,
-    IEnumerable<Process> processes)
+    ICollection<BusinessUser> users,
+    ICollection<Customer> customers,
+    ICollection<DocumentType> documentTypes,
+    ICollection<Process> processes)
     : Aggregate, IDocumentsInventory
 {
     private List<BusinessUser> Users { get; set; } = users.ToList();
@@ -42,7 +42,7 @@ public class DocumentsInventory(
         };
         
         Processes.Add(newProcess);
-        BusinessEvents.Add(new ProcessChangedStatusEvent{Process = newProcess});
+        AddBusinessEvent(new ProcessChangedStatusEvent{Process = newProcess});
         
         return newProcess;
     }
@@ -68,7 +68,7 @@ public class DocumentsInventory(
         }
 
         existingProcess.SetStatus(ProcessStatus.Finished);
-        BusinessEvents.Add(new ProcessChangedStatusEvent{Process = existingProcess});
+        AddBusinessEvent(new ProcessChangedStatusEvent{Process = existingProcess});
     }
     
     public void AbandonProcess(Guid businessUserId, Guid customerId)
@@ -87,7 +87,7 @@ public class DocumentsInventory(
             throw new ProcessCannotChangeStatusException("already finished", process.Id);
         
         process.SetStatus(ProcessStatus.Abandoned);
-        BusinessEvents.Add(new ProcessChangedStatusEvent{Process = process});
+        AddBusinessEvent(new ProcessChangedStatusEvent{Process = process});
     }
 
     public void SetBusinessUser(BusinessUser user)
@@ -96,12 +96,12 @@ public class DocumentsInventory(
         if (existingUser is not null && existingUser.Name != user.Name)
         {
             existingUser.Set(user);
-            BusinessEvents.Add(new BusinessUserUpdatedEvent {User = user});
+            AddBusinessEvent(new BusinessUserUpdatedEvent {User = user});
         }
         else
         {
             Users.Add(user);
-            BusinessEvents.Add(new BusinessUserAddedEvent {User = user});
+            AddBusinessEvent(new BusinessUserAddedEvent {User = user});
         }
     }
     
@@ -114,12 +114,12 @@ public class DocumentsInventory(
         if (existingCustomer is null)
         {
             Customers.Add(customer);
-            BusinessEvents.Add(new CustomerAddedEvent{Customer = customer});
+            AddBusinessEvent(new CustomerAddedEvent{Customer = customer});
         }
         else if(existingCustomer.AssignedUserId != customer.AssignedUserId)
         {
             customer.ReassignUser(customer);
-            BusinessEvents.Add(new CustomerReassignedEvent{Customer = customer});
+            AddBusinessEvent(new CustomerReassignedEvent{Customer = customer});
         }
     }
 
@@ -137,7 +137,7 @@ public class DocumentsInventory(
         if(existingProcess is null)
             throw new ProcessForDocumentNotFoundException(document.CustomerId, document.UserId);
         existingProcess.AddDocument(document);
-        BusinessEvents.Add(new DocumentAddedEvent {Document = document});
+        AddBusinessEvent(new DocumentAddedEvent {Document = document});
     }
     
     public ProcessReport GetReport(Guid processId)
@@ -157,7 +157,7 @@ public class DocumentsInventory(
             .ToArray();
 
         var report = new ProcessReport(processId, user?.Id, customer?.Id, user?.Name!, customer?.Name!, requiredDocumentTypes, providedDocuments);
-        BusinessEvents.Add(new ProcessReportGeneratedEvent {ProcessId = processId, ProcessReport = report});
+        AddBusinessEvent(new ProcessReportGeneratedEvent {ProcessId = processId, ProcessReport = report});
         
         return report;
     }
@@ -168,6 +168,5 @@ public class DocumentsInventory(
 
     public IEnumerable<BusinessUser> GetUsers() => Users.ToArray();
     public IEnumerable<Customer> GetCustomers() => Customers.ToArray();
-    
     public IEnumerable<Process> GetProcesses() => Processes.ToArray();
 }

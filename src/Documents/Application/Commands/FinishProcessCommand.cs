@@ -11,6 +11,8 @@ public class FinishProcessCommandHandler(IDomainEventDispatcher dispatcher, IDoc
 {
     public async Task<Unit> Handle(FinishProcessCommand command, CancellationToken cancellationToken)
     {
+        //Here i'd call user & consumer domain services to verify the users
+        
         var documentInventory = await repository.GetDocumentInventory(cancellationToken);
         documentInventory.FinishProcess(command.UserId, command.CustomerId);
         await dispatcher.DispatchEvents(documentInventory.BusinessEvents, cancellationToken);

@@ -8,8 +8,7 @@ namespace Documents.Application.EventHandlers;
 
 public class ProcessChangedStatusEventHandler(
     IDocumentInventoryRepository repository,
-    IIntegrationEventProducer integrationEventProducer,
-    ILogger<ProcessChangedStatusEventHandler> logger)
+    IIntegrationEventProducer integrationEventProducer)
     : IDomainEventHandler<ProcessChangedStatusEvent>
 {
     public async Task Handle(ProcessChangedStatusEvent domainEvent, CancellationToken cancellationToken)

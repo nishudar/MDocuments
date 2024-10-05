@@ -12,10 +12,12 @@ public class StartProcessCommandHandler(IDomainEventDispatcher dispatcher, IDocu
 {
     public async Task<ProcessReport> Handle(StartProcessCommand command, CancellationToken cancellationToken)
     {
+        //Here i'd call user & consumer domain services to verify the users
+        
         var documentInventory = await repository.GetDocumentInventory(cancellationToken);
         var process = documentInventory.StartProcess(command.UserId, command.CustomerId);
         await dispatcher.DispatchEvents(documentInventory.BusinessEvents, cancellationToken);
-        var report = documentInventory.GetReport(process.Id);
+        var report = documentInventory.GetReport(process.Id)!;
             
         return report;
     }

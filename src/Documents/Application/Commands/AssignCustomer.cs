@@ -12,6 +12,8 @@ public class AssignCustomerCommandHandler(IDomainEventDispatcher dispatcher, IDo
 {
     public async Task<Customer> Handle(AssignCustomerCommand command, CancellationToken cancellationToken)
     {
+        //Here i'd call user & consumer domain services to verify the users
+        
         var documentInventory = await repository.GetDocumentInventory(cancellationToken);
         var id = Guid.NewGuid();
         var customer = new Customer

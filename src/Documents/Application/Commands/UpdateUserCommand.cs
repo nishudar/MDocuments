@@ -12,6 +12,8 @@ public class UpdateBusinessUserCommandHandler(IDomainEventDispatcher dispatcher,
 {
     public async Task<BusinessUser> Handle(UpdateBusinessUserCommand command, CancellationToken cancellationToken)
     {
+        //Here i'd call user & consumer domain services to verify the users
+        
         var documentInventory = await repository.GetDocumentInventory(cancellationToken);
         var businessUser = new BusinessUser
         {

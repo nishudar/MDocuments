@@ -2,8 +2,17 @@ using Common.DomainEvents;
 
 namespace Common.Abstracts;
 
-public abstract class Aggregate
+public interface IAggregate
+{
+    Guid Id { get; init; }
+
+    ICollection<IDomainEvent> BusinessEvents { get; }
+}
+
+public abstract class Aggregate : IAggregate
 {
     public Guid Id { get; init; }
-    public readonly List<IDomainEvent> BusinessEvents = new();
+    private readonly List<IDomainEvent> _businessEvents = [];
+    public ICollection<IDomainEvent> BusinessEvents => _businessEvents.ToArray();
+    protected void AddBusinessEvent(IDomainEvent businessEvent) => _businessEvents.Add(businessEvent);
 }

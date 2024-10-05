@@ -16,6 +16,8 @@ public class UploadDocumentHnandler(
 {
     public async Task<Guid> Handle(UploadDocumentCommand request, CancellationToken cancellationToken)
     {
+        //Here i'd call user & consumer domain services to verify the users
+        
         var upload = request.UploadedModel;
         var documentInventory = await repository.GetDocumentInventory(cancellationToken);
         var document = new Document

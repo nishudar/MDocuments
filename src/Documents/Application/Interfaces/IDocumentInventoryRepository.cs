@@ -5,7 +5,7 @@ namespace Documents.Application.Interfaces;
 
 public interface IDocumentInventoryRepository
 {
-    Task<DocumentsInventory> GetDocumentInventory(CancellationToken ct);
+    Task<IDocumentsInventory> GetDocumentInventory(CancellationToken ct);
     Task AddBusinessUser(BusinessUser user, CancellationToken ct);
     Task UpdateBusinessUser(BusinessUser user, CancellationToken ct);
     Task AddCustomer(Customer customer, CancellationToken ct);

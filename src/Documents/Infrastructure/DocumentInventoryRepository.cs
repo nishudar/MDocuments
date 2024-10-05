@@ -24,9 +24,9 @@ public class DocumentInventoryRepository : IDocumentInventoryRepository
     ];
     
 
-    public Task<DocumentsInventory> GetDocumentInventory(CancellationToken ct)
+    public Task<IDocumentsInventory> GetDocumentInventory(CancellationToken ct)
     {
-        return Task.FromResult<DocumentsInventory>(new DocumentsInventory(
+        return Task.FromResult<IDocumentsInventory>(new DocumentsInventory(
             Users.ToArray(), 
             Customers.ToArray(),
             AllowedDocumentTypes.ToArray(), 

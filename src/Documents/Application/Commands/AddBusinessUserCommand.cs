@@ -13,6 +13,8 @@ public class AddBusinessUserCommandHandler(IDomainEventDispatcher dispatcher, ID
 {
     public async Task<BusinessUser> Handle(AddBusinessUserCommand command, CancellationToken cancellationToken)
     {
+        //Here i'd call user & consumer domain services to verify the users
+        
         var documentInventory = await repository.GetDocumentInventory(cancellationToken);
         var id = Guid.NewGuid();
         var businessUser = new BusinessUser
