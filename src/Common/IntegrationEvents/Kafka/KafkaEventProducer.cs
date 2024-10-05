@@ -1,25 +1,59 @@
+using System.Text;
 using System.Text.Json;
 using Common.IntegrationEvents.Events;
 using Confluent.Kafka;
 
 namespace Common.IntegrationEvents.Kafka;
 
-public class KafkaIntegrationEventProducer : IIntegrationEventProducer
+public class KafkaIntegrationEventProducer(string bootstrapServers) : IIntegrationEventProducer
 {
-    private readonly IProducer<string, string> _producer;
-    public KafkaIntegrationEventProducer(string bootstrapServers)
+    private readonly ProducerConfig _config = new()
     {
-        var config = new ProducerConfig
+        BootstrapServers = bootstrapServers
+    };
+
+    private sealed class IntegrationEventSerializer<T> : Confluent.Kafka.ISerializer<T> where T: IIntegrationEvent
+    {
+        public byte[] Serialize(T? data, SerializationContext context)
         {
-            BootstrapServers = bootstrapServers
-        };
-        _producer = new ProducerBuilder<string, string>(config).Build();
+            return object.Equals(data, default(T)) ? [] : JsonSerializer.SerializeToUtf8Bytes(data, data.GetType());
+        }
     }
 
-    public async Task SendEvent<T>(string topic, string key, T eventObject, CancellationToken cancellationToken) where T : IIntegrationEvent
+    
+    public async Task Publish<T>(T eventObject, string key, string topic, CancellationToken cancellationToken) where T : IIntegrationEvent
     {
-        var value = JsonSerializer.Serialize(eventObject);
-        var message = new Message<string, string> { Key = key, Value = value };
-        await _producer.ProduceAsync(topic, message, cancellationToken);
+        var producer = new ProducerBuilder<string, T>(_config).Build();
+        var message = new Message<string, T>
+        {
+            Key = key,
+            Value = eventObject,
+        };
+		
+        await producer.ProduceAsync(topic, message, cancellationToken);
+    }
+    
+    public async Task Publish<T>(
+        T? eventObject, 
+        string key,
+        string eventType,
+        string topic,
+        CancellationToken cancellationToken) 
+        where T : IIntegrationEvent
+    {
+        var producer = new ProducerBuilder<string, T?>(_config)
+            .SetValueSerializer(new IntegrationEventSerializer<T?>())
+            .Build();
+        var message = new Message<string, T?>
+        {
+            Key = key,
+            Value = eventObject,
+            Headers = new Headers
+            {
+                { "eventType", Encoding.UTF8.GetBytes(typeof(T).Name) } 
+            }
+        };
+		
+        await producer.ProduceAsync(topic, message, cancellationToken);
     }
 }

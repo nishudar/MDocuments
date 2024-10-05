@@ -1,5 +1,6 @@
 using Common.DomainEvents;
 using Common.IntegrationEvents;
+using Common.IntegrationEvents.Kafka;
 using Common.Mediatr;
 using Common.Middleware;
 using Common.Seq;
@@ -24,11 +25,6 @@ builder.Services.AddKafkaIntegrationEvents(kafkaUrl);
 
 builder.Services.AddDomainEventHandlers();
 builder.Services.AddInfrastructure(storageServiceUrl);
-
-builder.Services.AddAntiforgery(options =>
-{
-    options.SuppressXFrameOptionsHeader = true;
-});
 
 var app = builder.Build();
 

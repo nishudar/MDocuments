@@ -14,38 +14,36 @@ services:
       - md_services_network
     restart: unless-stopped
 
-  md-kafka:
+  kafka:
     image: confluentinc/cp-kafka:7.7.1
-    container_name: md-kafka
+    container_name: kafka
     environment:
-      KAFKA_ZOOKEEPER_CONNECT: md-zookeeper:2181
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://md-kafka:9092
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
     ports:
-      - "9092:9092"
-    depends_on:
-      - md-zookeeper
+      - "9092:9092"    
     networks:
       - md_services_network
     restart: unless-stopped
 
-  md-kafka-client:
+  kafka-client:
     image: bitnami/kafka:latest
     command:
       - sh
       - -c
       - |
-        kafka-topics.sh --create --topic file-uploads-topic --bootstrap-server md-kafka:9092 --partitions 1 --replication-factor 1 && \
-        kafka-topics.sh --create --topic documents-topic --bootstrap-server md-kafka:9092 --partitions 1 --replication-factor 1 && \
+        kafka-topics.sh --create --topic file-uploads-topic --bootstrap-server kafka:9092 --partitions 1 --replication-factor 1 && \
+        kafka-topics.sh --create --topic documents-topic --bootstrap-server kafka:9092 --partitions 1 --replication-factor 1 && \
         tail -f /dev/null
     depends_on:
-      - md-kafka
+      - kafka
     networks:
       - md_services_network
 
-  md-zookeeper:
+  zookeeper:
     image: confluentinc/cp-zookeeper:7.7.1
-    container_name: md-zookeeper
+    container_name: zookeeper
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000

@@ -9,7 +9,7 @@ namespace Storage.Application.Commands;
 
 public record UploadFileCommand(string FileName, string FileType, Guid UserId, IFormFile File) : IRequest<Guid>;
 
-public class UploadFileHandler(IFileMetadataRepository fileMetadata, IFileWriter fileWriter, IIntegrationEventProducer integrationEventProducer)
+public class UploadFileHandler(IFileMetadataRepository fileMetadata, IFileWriter fileWriter, IMediator mediator)
     : IRequestHandler<UploadFileCommand, Guid>
 {
     public async Task<Guid> Handle(UploadFileCommand request, CancellationToken cancellationToken)
@@ -29,14 +29,13 @@ public class UploadFileHandler(IFileMetadataRepository fileMetadata, IFileWriter
             await fileMetadata.SetFileMetadata(metadata with {Status = FileStatus.Uploading}, cancellationToken);
             await fileWriter.SaveFile(request.File, metadata, cancellationToken);
             await fileMetadata.SetFileMetadata(metadata with {Status = FileStatus.Completed}, cancellationToken);
-            await integrationEventProducer.SendEvent(IntegrationTopics.FileUploadsTopic, metadata.Id.ToString(),
-                fileUploadEvent with {Status = FileStatus.Completed}, cancellationToken);
+            
+            await mediator.Publish(fileUploadEvent with {Status = FileStatus.Completed}, cancellationToken);
         }
         catch (Exception)
         {
-            await integrationEventProducer.SendEvent(IntegrationTopics.FileUploadsTopic, metadata.Id.ToString(), fileUploadEvent, cancellationToken);
             await fileMetadata.SetFileMetadata(metadata with{Status = FileStatus.Failed}, cancellationToken);
-            await integrationEventProducer.SendEvent(IntegrationTopics.FileUploadsTopic, metadata.Id.ToString(), fileUploadEvent with{Status = FileStatus.Failed}, cancellationToken);
+            await mediator.Publish(fileUploadEvent with {Status = FileStatus.Failed}, cancellationToken);
         }
         
         return metadata.Id;

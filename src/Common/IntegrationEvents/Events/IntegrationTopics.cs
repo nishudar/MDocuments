@@ -1,4 +1,4 @@
-namespace Common.IntegrationEvents
+namespace Common.IntegrationEvents.Events
 {
     public static class IntegrationTopics
     {

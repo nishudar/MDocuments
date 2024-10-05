@@ -1,5 +1,6 @@
 using System.Text.Json;
 using Common.IntegrationEvents;
+using Common.IntegrationEvents.Events;
 using Confluent.Kafka;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Options;
@@ -20,7 +21,7 @@ public class KafkaConsumerService(
         {
             GroupId = _configuration.Group,
             BootstrapServers = _configuration.Server,
-            AutoOffsetReset = AutoOffsetReset.Earliest
+            AutoOffsetReset = AutoOffsetReset.Latest
         };
 
         using var consumer = new ConsumerBuilder<Ignore, string>(config).Build();

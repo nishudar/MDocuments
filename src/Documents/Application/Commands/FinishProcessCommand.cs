@@ -1,4 +1,7 @@
-﻿using Common.DomainEvents;
+﻿using Common.Abstracts;
+using Common.DomainEvents;
+using Common.IntegrationEvents;
+using Common.IntegrationEvents.Events;
 using Documents.Application.Interfaces;
 using MediatR;
 
@@ -6,7 +9,8 @@ namespace Documents.Application.Commands;
 
 public record FinishProcessCommand(Guid UserId, Guid CustomerId) : IRequest<Unit>;
 
-public class FinishProcessCommandHandler(IDomainEventDispatcher dispatcher, IDocumentInventoryRepository repository) 
+public class FinishProcessCommandHandler(IDomainEventDispatcher dispatcher, IDocumentInventoryRepository repository,
+    IMediator mediator) 
     : IRequestHandler<FinishProcessCommand, Unit>
 {
     public async Task<Unit> Handle(FinishProcessCommand command, CancellationToken cancellationToken)
@@ -16,7 +20,7 @@ public class FinishProcessCommandHandler(IDomainEventDispatcher dispatcher, IDoc
         var documentInventory = await repository.GetDocumentInventory(cancellationToken);
         documentInventory.FinishProcess(command.UserId, command.CustomerId);
         await dispatcher.DispatchEvents(documentInventory.BusinessEvents, cancellationToken);
-
+        
         return Unit.Value;
     }
 }
