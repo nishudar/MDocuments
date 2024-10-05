@@ -1,4 +1,4 @@
-namespace Documents.Domain.ValueTypes;
+namespace Documents.Domain.ValueObjects;
 
 public record DocumentType(
     string TypeName,

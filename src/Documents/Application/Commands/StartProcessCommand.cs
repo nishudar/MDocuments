@@ -1,6 +1,6 @@
 ﻿using Common.DomainEvents;
 using Documents.Application.Interfaces;
-using Documents.Domain.ValueTypes;
+using Documents.Domain.ValueObjects;
 using MediatR;
 
 namespace Documents.Application.Commands;

@@ -1,7 +1,7 @@
 using Documents.Application.Commands;
 using Documents.Application.Queries;
 using Documents.Domain.Entities;
-using Documents.Domain.ValueTypes;
+using Documents.Domain.ValueObjects;
 using MediatR;
 
 namespace Documents.Api;

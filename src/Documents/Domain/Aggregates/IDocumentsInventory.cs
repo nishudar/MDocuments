@@ -1,6 +1,6 @@
 using Common.Abstracts;
 using Documents.Domain.Entities;
-using Documents.Domain.ValueTypes;
+using Documents.Domain.ValueObjects;
 
 namespace Documents.Domain.Aggregates;
 

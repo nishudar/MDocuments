@@ -3,7 +3,7 @@ using Documents.Domain.Entities;
 using Documents.Domain.Enums;
 using Documents.Domain.Events;
 using Documents.Domain.Exceptions;
-using Documents.Domain.ValueTypes;
+using Documents.Domain.ValueObjects;
 using Force.DeepCloner;
 
 namespace Documents.Domain.Aggregates;

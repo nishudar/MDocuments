@@ -1,5 +1,5 @@
 using Documents.Domain.Enums;
-using Documents.Domain.ValueTypes;
+using Documents.Domain.ValueObjects;
 
 namespace Documents.Domain.Entities;
 

@@ -1,5 +1,5 @@
 using Common.DomainEvents;
-using Documents.Domain.ValueTypes;
+using Documents.Domain.ValueObjects;
 
 namespace Documents.Domain.Events;
 
