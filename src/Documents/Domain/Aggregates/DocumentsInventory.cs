@@ -3,6 +3,7 @@ using Documents.Domain.Entities;
 using Documents.Domain.Events;
 using Documents.Domain.Exceptions;
 using Documents.Domain.ValueTypes;
+using Force.DeepCloner;
 
 namespace Documents.Domain.Aggregates;
 
@@ -100,7 +101,7 @@ public class DocumentsInventory(
         }
         else
         {
-            Users.Add(user);
+            Users.Add(user.DeepClone());
             AddBusinessEvent(new BusinessUserAddedEvent {User = user});
         }
     }
@@ -113,7 +114,7 @@ public class DocumentsInventory(
         var existingCustomer = Customers.Find(c => c.Id == customer.Id);
         if (existingCustomer is null)
         {
-            Customers.Add(customer);
+            Customers.Add(customer.DeepClone());
             AddBusinessEvent(new CustomerAddedEvent{Customer = customer});
         }
         else if(existingCustomer.AssignedUserId != customer.AssignedUserId)
@@ -136,7 +137,7 @@ public class DocumentsInventory(
         var existingProcess = Processes.Find(process => process.BusinessUserId == document.UserId && process.CustomerId == document.CustomerId);
         if(existingProcess is null)
             throw new ProcessForDocumentNotFoundException(document.CustomerId, document.UserId);
-        existingProcess.AddDocument(document);
+        existingProcess.AddDocument(document.DeepClone());
         AddBusinessEvent(new DocumentAddedEvent {Document = document});
     }
     

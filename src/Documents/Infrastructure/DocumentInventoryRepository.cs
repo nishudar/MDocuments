@@ -2,6 +2,7 @@ using Documents.Application.Interfaces;
 using Documents.Domain.Aggregates;
 using Documents.Domain.Entities;
 using Documents.Domain.ValueTypes;
+using Force.DeepCloner;
 
 namespace Documents.Infrastructure;
 
@@ -27,10 +28,10 @@ public class DocumentInventoryRepository : IDocumentInventoryRepository
     public Task<IDocumentsInventory> GetDocumentInventory(CancellationToken ct)
     {
         return Task.FromResult<IDocumentsInventory>(new DocumentsInventory(
-            Users.ToArray(), 
-            Customers.ToArray(),
-            AllowedDocumentTypes.ToArray(), 
-            Processes.ToArray()));
+            Users.DeepClone(), 
+            Customers.DeepClone(),
+            AllowedDocumentTypes.DeepClone(), 
+            Processes.DeepClone()));
     }
 
     public Task AddBusinessUser(BusinessUser user, CancellationToken ct)

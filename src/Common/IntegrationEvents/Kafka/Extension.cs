@@ -1,4 +1,3 @@
-using Documents.Application.EventHandlers;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 

@@ -23,7 +23,9 @@ public class KafkaConsumerService(
             BootstrapServers = _configuration.Server,
             AutoOffsetReset = AutoOffsetReset.Latest
         };
-
+        
+        //workaround to aviod logging error on startup(topic not created yet)
+        await Task.Delay(3000, stoppingToken);
         using var consumer = new ConsumerBuilder<Ignore, string>(config).Build();
         consumer.Subscribe(IntegrationTopics.DocumentsTopic);
 

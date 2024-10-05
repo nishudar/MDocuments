@@ -43,7 +43,6 @@ public class Process : Entity, IProcess
         var allowedDocumentType = AllowedDocumentTypes.FirstOrDefault(type => type.TypeName == document.DocumenType);
         if (allowedDocumentType is null)
             throw new DocumentTypeNotAllowedException(document.DocumenType, Id);
-        //not supported yet
         if (!allowedDocumentType.MultipleAllowed && Documents.Exists(d => d.DocumenType == document.DocumenType))
             throw new DuplicatedDocumentTypeNotAllowedException(document.DocumenType, Id);
 
