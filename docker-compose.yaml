@@ -1,7 +1,7 @@
 services:
-  seq:
+  md-seq:
     image: datalust/seq:2024.3
-    container_name: mdocuments-seq
+    container_name: md-seq
     ports:
       - "5341:80"
       - "5342:5342"
@@ -11,86 +11,86 @@ services:
       - SEQ_FIRSTRUN_ADMINPASSWORD=seq
       - SEQ_LOGLEVEL=Information
     networks:
-      - services_network
+      - md_services_network
     restart: unless-stopped
 
-  kafka:
+  md-kafka:
     image: confluentinc/cp-kafka:7.7.1
-    container_name: mdocuments-kafka
+    container_name: md-kafka
     environment:
-      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_ZOOKEEPER_CONNECT: md-zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://md-kafka:9092
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
     ports:
       - "9092:9092"
     depends_on:
-      - zookeeper
+      - md-zookeeper
     networks:
-      - services_network
+      - md_services_network
     restart: unless-stopped
 
-  kafka-client:
+  md-kafka-client:
     image: bitnami/kafka:latest
     command:
       - sh
       - -c
       - |
-        kafka-topics.sh --create --topic file-uploads-topic --bootstrap-server kafka:9092 --partitions 1 --replication-factor 1 && \
-        kafka-topics.sh --create --topic documents-topic --bootstrap-server kafka:9092 --partitions 1 --replication-factor 1 && \
+        kafka-topics.sh --create --topic file-uploads-topic --bootstrap-server md-kafka:9092 --partitions 1 --replication-factor 1 && \
+        kafka-topics.sh --create --topic documents-topic --bootstrap-server md-kafka:9092 --partitions 1 --replication-factor 1 && \
         tail -f /dev/null
     depends_on:
-      - kafka
+      - md-kafka
     networks:
-      - services_network
+      - md_services_network
 
-  zookeeper:
+  md-zookeeper:
     image: confluentinc/cp-zookeeper:7.7.1
-    container_name: mdocuments-zookeeper
+    container_name: md-zookeeper
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000
     ports:
       - "2181:2181"
     networks:
-      - services_network
+      - md_services_network
     restart: unless-stopped
 
-  storage-service:
+  md-storage-service:
     build:
       context: .
       dockerfile: src/Storage/Dockerfile
     image: storage-service
-    container_name: mdocuments-storage-service
+    container_name: md-storage-service
     ports:
       - "8081:8080"
     networks:
-      - services_network
+      - md_services_network
     restart: unless-stopped
   
-  documents-service:
+  md-documents-service:
     build:
       context: .
       dockerfile: src/Documents/Dockerfile
     image: documents-service
-    container_name: mdocuments-documents-service
+    container_name: md-documents-service
     ports:
       - "8082:8080"
     networks:
-      - services_network
+      - md_services_network
     restart: unless-stopped
   
-  notification-hub:
+  md-notification-hub:
     build:
       context: .
       dockerfile: src/NotificationHub/Dockerfile
     image: notification-hub
-    container_name: mdocuments-notification-hub
+    container_name: md-notification-hub
     ports:
       - "8084:8080"
     networks:
-      - services_network
+      - md_services_network
     restart: unless-stopped
 
 networks:
-  services_network:
+  md_services_network:
     driver: bridge
