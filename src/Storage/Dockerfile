@@ -15,6 +15,8 @@ RUN dotnet build "Storage.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
+# Remove the appsettings.Development.json file before publishing
+RUN rm -f /src/src/Storage/appsettings.Development.json
 RUN dotnet publish "Storage.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
 FROM base AS final

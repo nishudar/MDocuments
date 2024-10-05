@@ -15,6 +15,7 @@ RUN dotnet build "Documents.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
+RUN rm -f /src/src/Documents/appsettings.Development.json
 RUN dotnet publish "Documents.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
 FROM base AS final
