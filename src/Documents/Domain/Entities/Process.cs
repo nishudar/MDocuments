@@ -23,7 +23,7 @@ public class Process : Entity, IProcess
     public void SetStatus(ProcessStatus status)
     {
         if (!AllDocumentsProvided() && status is ProcessStatus.Finished)
-            throw new ProcessCannotChangeStatus("some documents were not provided", Id);
+            throw new ProcessCannotChangeStatusException("some documents were not provided", Id);
 
         Status = status;
     }
