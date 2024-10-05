@@ -3,10 +3,11 @@ using System.Text.Json;
 using Common.IntegrationEvents.Events;
 using Confluent.Kafka;
 using Microsoft.Extensions.Logging;
+using Serilog;
 
 namespace Common.IntegrationEvents.Kafka;
 
-public class KafkaIntegrationEventProducer(string bootstrapServers, ILogger<KafkaIntegrationEventProducer> logger) : IIntegrationEventProducer
+public class KafkaIntegrationEventProducer(string bootstrapServers) : IIntegrationEventProducer
 {
     private readonly ProducerConfig _config = new()
     {
@@ -60,7 +61,7 @@ public class KafkaIntegrationEventProducer(string bootstrapServers, ILogger<Kafk
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "{ExMessage} + {InnerExceptionMessage}", ex.Message, ex.InnerException?.Message);
+            Log.Error(ex, "{ExMessage} + {InnerExceptionMessage}", ex.Message, ex.InnerException?.Message);
         }
     }
 }
