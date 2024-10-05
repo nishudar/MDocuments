@@ -10,9 +10,9 @@ namespace Documents.Infrastructure;
 
 public class DocumentInventoryRepository : IDocumentInventoryRepository
 {
-    private List<BusinessUser> Users { get; } = [ new() {Name = "Test User 1", Id = new()}];
+    private List<BusinessUser> Users { get; } = [];
     public List<Document> Documents { get; } = [];
-    private List<Customer> Customers { get;  } = [new(){Name = "Test customer 1", Id = new Guid()}];
+    private List<Customer> Customers { get;  } = [];
     private List<Process> Processes { get;  } = [];
     
     private List<DocumentType> AllowedDocumentTypes { get; } =
