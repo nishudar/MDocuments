@@ -61,6 +61,8 @@ services:
       dockerfile: src/Storage/Dockerfile
     image: storage-service
     container_name: md-storage-service
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
     ports:
       - "8081:8080"
     networks:
@@ -73,6 +75,8 @@ services:
       dockerfile: src/Documents/Dockerfile
     image: documents-service
     container_name: md-documents-service
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
     ports:
       - "8082:8080"
     networks:
@@ -85,6 +89,8 @@ services:
       dockerfile: src/NotificationHub/Dockerfile
     image: notification-hub
     container_name: md-notification-hub
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
     ports:
       - "8084:8080"
     networks:

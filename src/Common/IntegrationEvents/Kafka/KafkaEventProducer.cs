@@ -20,6 +20,6 @@ public class KafkaIntegrationEventProducer : IIntegrationEventProducer
     {
         var value = JsonSerializer.Serialize(eventObject);
         var message = new Message<string, string> { Key = key, Value = value };
-        await _producer.ProduceAsync(topic, message);
+        await _producer.ProduceAsync(topic, message, cancellationToken);
     }
 }
