@@ -1,7 +1,7 @@
 services:
-  md-seq:
+  seq:
     image: datalust/seq:2024.3
-    container_name: md-seq
+    container_name: seq
     ports:
       - "5341:80"
       - "5342:5342"
@@ -53,12 +53,12 @@ services:
       - md_services_network
     restart: unless-stopped
 
-  md-storage-service:
+  storage-service:
     build:
       context: .
       dockerfile: src/Storage/Dockerfile
     image: storage-service
-    container_name: md-storage-service
+    container_name: storage-service
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
     ports:
@@ -67,12 +67,12 @@ services:
       - md_services_network
     restart: unless-stopped
   
-  md-documents-service:
+  documents-service:
     build:
       context: .
       dockerfile: src/Documents/Dockerfile
     image: documents-service
-    container_name: md-documents-service
+    container_name: documents-service
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
     ports:
@@ -81,12 +81,12 @@ services:
       - md_services_network
     restart: unless-stopped
   
-  md-notification-hub:
+  notification-hub:
     build:
       context: .
       dockerfile: src/NotificationHub/Dockerfile
     image: notification-hub
-    container_name: md-notification-hub
+    container_name: notification-hub
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
     ports:
