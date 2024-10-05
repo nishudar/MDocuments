@@ -1,3 +1,4 @@
+using System.Collections.Concurrent;
 using Documents.Application.Interfaces;
 using Documents.Domain.Aggregates;
 using Documents.Domain.Entities;
@@ -11,11 +12,11 @@ namespace Documents.Infrastructure;
 
 public class DocumentInventoryRepository : IDocumentInventoryRepository
 {
-    private List<BusinessUser> Users { get; } = [];
-    private List<Customer> Customers { get;  } = [];
-    private List<Process> Processes { get;  } = [];
+    private ConcurrentBag<BusinessUser> Users { get; } = [];
+    private ConcurrentBag<Customer> Customers { get;  } = [];
+    private ConcurrentBag<Process> Processes { get;  } = [];
     
-    private List<DocumentType> AllowedDocumentTypes { get; } =
+    private ConcurrentBag<DocumentType> AllowedDocumentTypes { get; } =
     [
         new("RequiredDocument1", true, false),
         new("RequiredDocument2", true, false),
@@ -28,10 +29,10 @@ public class DocumentInventoryRepository : IDocumentInventoryRepository
     public Task<IDocumentsInventory> GetDocumentInventory(CancellationToken ct)
     {
         return Task.FromResult<IDocumentsInventory>(new DocumentsInventory(
-            Users.DeepClone(), 
-            Customers.DeepClone(),
-            AllowedDocumentTypes.DeepClone(), 
-            Processes.DeepClone()));
+            Users.ToArray().DeepClone(), 
+            Customers.ToArray().DeepClone(),
+            AllowedDocumentTypes.ToArray().DeepClone(), 
+            Processes.ToArray().DeepClone()));
     }
 
     public Task AddBusinessUser(BusinessUser user, CancellationToken ct)
@@ -43,14 +44,14 @@ public class DocumentInventoryRepository : IDocumentInventoryRepository
 
     public Task UpdateBusinessUser(BusinessUser user, CancellationToken ct)
     {
-        var existingUser = Users.Find(u => u.Id == user.Id);
+        var existingUser = Users.FirstOrDefault(u => u.Id == user.Id);
         existingUser?.Set(user);
         return Task.CompletedTask;
     }
 
     public Task AddCustomer(Customer customer, CancellationToken ct)
     {
-        if(!Customers.Exists(c => c.Id == customer.Id))
+        if(Customers.All(c => c.Id != customer.Id))
             Customers.Add(customer);
         
         return Task.CompletedTask;
@@ -58,7 +59,7 @@ public class DocumentInventoryRepository : IDocumentInventoryRepository
 
     public Task AssignCustomer(Customer customer, CancellationToken ct)
     {
-        var existingCustomer = Customers.Find(c => c.Id == customer.Id);
+        var existingCustomer = Customers.FirstOrDefault(c => c.Id == customer.Id);
         existingCustomer?.ReassignUser(customer);
 
         return Task.CompletedTask;
@@ -66,7 +67,7 @@ public class DocumentInventoryRepository : IDocumentInventoryRepository
 
     public Task AddDocument(Document document, CancellationToken ct)
     {
-        var process = Processes.Find(p =>
+        var process = Processes.FirstOrDefault(p =>
             p.CustomerId == document.CustomerId &&
             p.BusinessUserId == document.UserId);
         process?.AddDocument(document);
@@ -77,7 +78,7 @@ public class DocumentInventoryRepository : IDocumentInventoryRepository
     
     public Task UpdateProcessStatus(Process process, CancellationToken ct)
     {
-        if(!Processes.Exists(p => p.Id == process.Id))
+        if(Processes.All(p => p.Id != process.Id))
             Processes.Add(process);
         process.SetStatus(process.Status);
         
