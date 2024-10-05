@@ -1,14 +1,14 @@
 ﻿using Documents.Application.Interfaces;
 using Documents.Domain.Exceptions;
 using Documents.Infrastructure.Clients.Storage.Models;
+using MediatR;
 
 namespace Documents.Application.Queries;
 
-using MediatR;
-
 public record DownloadFileQuery(Guid DocumentId) : IRequest<FileDownloadResponse>;
-    
-public class DownloadFileHandler(IDocumentInventoryRepository repository, IStorageService storageService) : IRequestHandler<DownloadFileQuery,  FileDownloadResponse>
+
+public class DownloadFileHandler(IDocumentInventoryRepository repository, IStorageService storageService)
+    : IRequestHandler<DownloadFileQuery, FileDownloadResponse>
 {
     public async Task<FileDownloadResponse> Handle(DownloadFileQuery request, CancellationToken cancellationToken)
     {
@@ -17,9 +17,9 @@ public class DownloadFileHandler(IDocumentInventoryRepository repository, IStora
         if (document is null && document is {FileId: null})
             throw new NotFoundException("document", request.DocumentId);
         var file = await storageService.DownloadFileAsync(document!.FileId!.Value, cancellationToken);
-        if(file is null)
+        if (file is null)
             throw new NotFoundException("document", request.DocumentId);
-        
+
         return file;
     }
 }

@@ -12,5 +12,4 @@ public interface IDocumentInventoryRepository
     Task AssignCustomer(Customer customer, CancellationToken ct);
     Task AddDocument(Document document, CancellationToken ct);
     Task UpdateProcessStatus(Process process, CancellationToken ct);
-    
 }

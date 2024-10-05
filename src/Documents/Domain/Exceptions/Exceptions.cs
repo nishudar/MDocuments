@@ -6,7 +6,7 @@ public sealed class UserDoesNotExistException() : BusinessException("User does n
 {
     public UserDoesNotExistException(Guid userId) : this()
     {
-        Data[nameof(userId)] = userId; 
+        Data[nameof(userId)] = userId;
     }
 }
 
@@ -27,7 +27,8 @@ public sealed class ProcessForDocumentNotFoundException() : BusinessException("P
     }
 }
 
-public sealed class ProcessAlreadyStartedException() : BusinessException("Cannot start process as it is already started")
+public sealed class ProcessAlreadyStartedException()
+    : BusinessException("Cannot start process as it is already started")
 {
     public ProcessAlreadyStartedException(Guid customerId, Guid userId, Guid processId) : this()
     {
@@ -37,7 +38,8 @@ public sealed class ProcessAlreadyStartedException() : BusinessException("Cannot
     }
 }
 
-public sealed class ProcessCannotChangeStatusException(string reason) : BusinessException($"Cannot finish process: {reason}")
+public sealed class ProcessCannotChangeStatusException(string reason)
+    : BusinessException($"Cannot finish process: {reason}")
 {
     public ProcessCannotChangeStatusException(string reason, Guid processId) : this(reason)
     {
@@ -45,8 +47,7 @@ public sealed class ProcessCannotChangeStatusException(string reason) : Business
     }
 }
 
-
-public sealed class InvalidUserIdException() : BusinessException($"Invalid user id for document")
+public sealed class InvalidUserIdException() : BusinessException("Invalid user id for document")
 {
     public InvalidUserIdException(Guid userId, Guid documentId) : this()
     {
@@ -55,7 +56,7 @@ public sealed class InvalidUserIdException() : BusinessException($"Invalid user 
     }
 }
 
-public sealed class InvalidCustomerIdException() : BusinessException($"Invalid user id for document")
+public sealed class InvalidCustomerIdException() : BusinessException("Invalid user id for document")
 {
     public InvalidCustomerIdException(Guid customerId, Guid documentId) : this()
     {
@@ -64,7 +65,7 @@ public sealed class InvalidCustomerIdException() : BusinessException($"Invalid u
     }
 }
 
-public sealed class DocumentTypeNotAllowedException() : BusinessException($"Document type is not allowed")
+public sealed class DocumentTypeNotAllowedException() : BusinessException("Document type is not allowed")
 {
     public DocumentTypeNotAllowedException(string documentType, Guid processId) : this()
     {
@@ -73,7 +74,8 @@ public sealed class DocumentTypeNotAllowedException() : BusinessException($"Docu
     }
 }
 
-public sealed class DuplicatedDocumentTypeNotAllowedException() : BusinessException($"Duplicated document type is not allowed")
+public sealed class DuplicatedDocumentTypeNotAllowedException()
+    : BusinessException("Duplicated document type is not allowed")
 {
     public DuplicatedDocumentTypeNotAllowedException(string documentType, Guid processId) : this()
     {
@@ -81,7 +83,6 @@ public sealed class DuplicatedDocumentTypeNotAllowedException() : BusinessExcept
         Data[nameof(processId)] = processId;
     }
 }
-
 
 public sealed class NotFoundException(string entity) : BusinessException($"Entity not found - id: {entity}")
 {

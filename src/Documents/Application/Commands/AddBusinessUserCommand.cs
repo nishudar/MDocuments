@@ -7,13 +7,13 @@ namespace Documents.Application.Commands;
 
 public record AddBusinessUserCommand(string Name) : IRequest<BusinessUser>;
 
-public class AddBusinessUserCommandHandler(IDomainEventDispatcher dispatcher, IDocumentInventoryRepository repository) 
+public class AddBusinessUserCommandHandler(IDomainEventDispatcher dispatcher, IDocumentInventoryRepository repository)
     : IRequestHandler<AddBusinessUserCommand, BusinessUser>
 {
     public async Task<BusinessUser> Handle(AddBusinessUserCommand command, CancellationToken cancellationToken)
     {
         //Here i'd call user & consumer domain services to verify the users
-        
+
         var documentInventory = await repository.GetDocumentInventory(cancellationToken);
         var id = Guid.NewGuid();
         var businessUser = new BusinessUser

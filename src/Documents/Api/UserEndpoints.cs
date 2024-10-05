@@ -61,7 +61,7 @@ public static class UserEndpoints
             {
                 using var cts = new CancellationTokenSource(timeout);
                 await mediator.Send(new UpdateBusinessUserCommand(userId, businessUser.Name), cts.Token);
-                
+
                 return Results.NoContent();
             })
             .DisableAntiforgery()

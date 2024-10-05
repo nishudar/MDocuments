@@ -12,7 +12,6 @@ public class Document : Entity
 
     public void SetFileId(Guid fileId)
     {
-        this.FileId = fileId;
+        FileId = fileId;
     }
 }
-

@@ -7,15 +7,13 @@ using Force.DeepCloner;
 
 namespace Documents.Infrastructure;
 
-
 /// This repository implementation is very simplified due to the limitation of the solution to in-memory operations.
-
 public class DocumentInventoryRepository : IDocumentInventoryRepository
 {
     private ConcurrentBag<BusinessUser> Users { get; } = [];
-    private ConcurrentBag<Customer> Customers { get;  } = [];
-    private ConcurrentBag<Process> Processes { get;  } = [];
-    
+    private ConcurrentBag<Customer> Customers { get; } = [];
+    private ConcurrentBag<Process> Processes { get; } = [];
+
     private ConcurrentBag<DocumentType> AllowedDocumentTypes { get; } =
     [
         new("RequiredDocument1", true, false),
@@ -24,21 +22,21 @@ public class DocumentInventoryRepository : IDocumentInventoryRepository
         new("Optional1Multiple", false, true),
         new("Optional2Single", false, false)
     ];
-    
+
 
     public Task<IDocumentsInventory> GetDocumentInventory(CancellationToken ct)
     {
         return Task.FromResult<IDocumentsInventory>(new DocumentsInventory(
-            Users.ToArray().DeepClone(), 
+            Users.ToArray().DeepClone(),
             Customers.ToArray().DeepClone(),
-            AllowedDocumentTypes.ToArray().DeepClone(), 
+            AllowedDocumentTypes.ToArray().DeepClone(),
             Processes.ToArray().DeepClone()));
     }
 
     public Task AddBusinessUser(BusinessUser user, CancellationToken ct)
     {
         Users.Add(user);
-        
+
         return Task.CompletedTask;
     }
 
@@ -51,9 +49,9 @@ public class DocumentInventoryRepository : IDocumentInventoryRepository
 
     public Task AddCustomer(Customer customer, CancellationToken ct)
     {
-        if(Customers.All(c => c.Id != customer.Id))
+        if (Customers.All(c => c.Id != customer.Id))
             Customers.Add(customer);
-        
+
         return Task.CompletedTask;
     }
 
@@ -74,14 +72,14 @@ public class DocumentInventoryRepository : IDocumentInventoryRepository
 
         return Task.CompletedTask;
     }
-    
-    
+
+
     public Task UpdateProcessStatus(Process process, CancellationToken ct)
     {
-        if(Processes.All(p => p.Id != process.Id))
+        if (Processes.All(p => p.Id != process.Id))
             Processes.Add(process);
         process.SetStatus(process.Status);
-        
+
         return Task.CompletedTask;
     }
 }

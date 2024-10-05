@@ -13,33 +13,26 @@ public class KafkaIntegrationEventProducer(string bootstrapServers) : IIntegrati
         BootstrapServers = bootstrapServers
     };
 
-    private sealed class IntegrationEventSerializer<T> : Confluent.Kafka.ISerializer<T> where T: IIntegrationEvent
-    {
-        public byte[] Serialize(T? data, SerializationContext context)
-        {
-            return object.Equals(data, default(T)) ? [] : JsonSerializer.SerializeToUtf8Bytes(data, data.GetType());
-        }
-    }
 
-    
-    public async Task Publish<T>(T eventObject, string key, string topic, CancellationToken cancellationToken) where T : IIntegrationEvent
+    public async Task Publish<T>(T eventObject, string key, string topic, CancellationToken cancellationToken)
+        where T : IIntegrationEvent
     {
         var producer = new ProducerBuilder<string, T>(_config).Build();
         var message = new Message<string, T>
         {
             Key = key,
-            Value = eventObject,
+            Value = eventObject
         };
-		
+
         await producer.ProduceAsync(topic, message, cancellationToken);
     }
-    
+
     public async Task Publish<T>(
-        T? eventObject, 
+        T? eventObject,
         string key,
         string eventType,
         string topic,
-        CancellationToken cancellationToken) 
+        CancellationToken cancellationToken)
         where T : IIntegrationEvent
     {
         try
@@ -61,6 +54,14 @@ public class KafkaIntegrationEventProducer(string bootstrapServers) : IIntegrati
         catch (Exception ex)
         {
             Log.Error(ex, "{ExMessage} + {InnerExceptionMessage}", ex.Message, ex.InnerException?.Message);
+        }
+    }
+
+    private sealed class IntegrationEventSerializer<T> : ISerializer<T> where T : IIntegrationEvent
+    {
+        public byte[] Serialize(T? data, SerializationContext context)
+        {
+            return Equals(data, default(T)) ? [] : JsonSerializer.SerializeToUtf8Bytes(data, data.GetType());
         }
     }
 }

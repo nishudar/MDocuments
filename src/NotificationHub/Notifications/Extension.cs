@@ -6,9 +6,9 @@ public static class Extension
     {
         services.AddSignalR();
     }
-    
+
     public static void UseNotificationHub(this WebApplication app)
     {
-        app.MapHub<Notifications.NotificationHub>("/notificationHub");
-    }   
+        app.MapHub<NotificationHub>("/notificationHub");
+    }
 }

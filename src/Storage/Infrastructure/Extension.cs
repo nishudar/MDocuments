@@ -9,6 +9,6 @@ public static class Extension
     {
         serviceCollection.TryAddSingleton<IFileMetadataRepository, FileMetadataRepository>();
         serviceCollection.TryAddTransient<IFileReader>(_ => new FileReader(storageDirecotry));
-        serviceCollection.TryAddTransient<IFileWriter>( _=> new FileWriter(storageDirecotry));
-    } 
+        serviceCollection.TryAddTransient<IFileWriter>(_ => new FileWriter(storageDirecotry));
+    }
 }

@@ -23,7 +23,7 @@ public static class FileEndpoints
                 return Results.Ok(new {FileId = fileId});
             })
             .DisableAntiforgery()
-            .WithMetadata(new Microsoft.AspNetCore.Mvc.IgnoreAntiforgeryTokenAttribute())
+            .WithMetadata(new IgnoreAntiforgeryTokenAttribute())
             .WithName("uploadFile")
             .WithTags("Files")
             .Produces(StatusCodes.Status200OK)
@@ -40,13 +40,13 @@ public static class FileEndpoints
                 using CancellationTokenSource cts = new(operationTimeout);
                 var fileMetadata = await mediator.Send(new GetFileStreamQuery(id), cts.Token);
                 return fileMetadata is not null
-                    ? Results.File(fileMetadata.FileStream, contentType: fileMetadata.ContentType,
-                        fileDownloadName: fileMetadata.FileName)
+                    ? Results.File(fileMetadata.FileStream, fileMetadata.ContentType,
+                        fileMetadata.FileName)
                     : Results.NotFound();
             })
             .WithName("downloadFile")
             .WithTags("Files")
-            .Produces<FileContentResult>(StatusCodes.Status200OK)
+            .Produces<FileContentResult>()
             .Produces(StatusCodes.Status404NotFound)
             .WithOpenApi(operation =>
             {
@@ -56,7 +56,7 @@ public static class FileEndpoints
                 idParam.Description = "The unique identifier of the file";
                 return operation;
             });
-        
+
         app.MapGet("/v1/file/metadata", async (IMediator mediator, Guid? userId) =>
             {
                 using CancellationTokenSource cts = new(operationTimeout);
@@ -66,16 +66,13 @@ public static class FileEndpoints
             })
             .WithName("getMetadata")
             .WithTags("Files")
-            .Produces<IEnumerable<FileMetadata>>(StatusCodes.Status200OK)
+            .Produces<IEnumerable<FileMetadata>>()
             .WithOpenApi(operation =>
             {
                 operation.Summary = "Retrieve files metadata";
                 operation.Description = "Gets metadata for all files, optionally filtered by user ID.";
                 var userIdParam = operation.Parameters.FirstOrDefault(p => p.Name == "userId");
-                if (userIdParam != null)
-                {
-                    userIdParam.Description = "Optional user ID to filter files";
-                }
+                if (userIdParam != null) userIdParam.Description = "Optional user ID to filter files";
                 return operation;
             });
 

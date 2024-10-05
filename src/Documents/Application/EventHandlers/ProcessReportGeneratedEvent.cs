@@ -9,7 +9,7 @@ public class ProcessReportGeneratedEventHandler(ILogger<ProcessReportGeneratedEv
     public Task Handle(ProcessReportGeneratedEvent domainEvent, CancellationToken cancellationToken)
     {
         logger.LogInformation("Generated process report for {ProcessId}", domainEvent.ProcessId);
-        
+
         return Task.CompletedTask;
     }
 }

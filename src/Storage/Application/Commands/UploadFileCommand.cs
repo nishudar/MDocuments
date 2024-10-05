@@ -27,15 +27,15 @@ public class UploadFileHandler(IFileMetadataRepository fileMetadata, IFileWriter
             await fileMetadata.SetFileMetadata(metadata with {Status = FileStatus.Uploading}, cancellationToken);
             await fileWriter.SaveFile(request.File, metadata, cancellationToken);
             await fileMetadata.SetFileMetadata(metadata with {Status = FileStatus.Completed}, cancellationToken);
-            
+
             await mediator.Publish(fileUploadEvent with {Status = FileStatus.Completed.ToString()}, cancellationToken);
         }
         catch (Exception)
         {
-            await fileMetadata.SetFileMetadata(metadata with{Status = FileStatus.Failed}, cancellationToken);
+            await fileMetadata.SetFileMetadata(metadata with {Status = FileStatus.Failed}, cancellationToken);
             await mediator.Publish(fileUploadEvent with {Status = FileStatus.Failed.ToString()}, cancellationToken);
         }
-        
+
         return metadata.Id;
     }
 }

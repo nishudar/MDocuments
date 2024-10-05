@@ -5,4 +5,3 @@ public record ProcessStatusUpdateIntegrationEvent(Guid ProcessId, Guid UserId, G
 {
     public string Topic => IntegrationTopics.DocumentsTopic;
 }
-

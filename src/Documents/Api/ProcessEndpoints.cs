@@ -9,7 +9,7 @@ namespace Documents.Api;
 public static class ProcessEndpoints
 {
     private const string TagProcesses = "Processes";
-    
+
     public static void MapProcessEndpoints(this IEndpointRouteBuilder app, TimeSpan timeout)
     {
         app.MapGet("/v1/document/process", async (
@@ -31,7 +31,7 @@ public static class ProcessEndpoints
                 operation.Description = "Get list of processes and associated data";
                 return operation;
             });
-        
+
         app.MapPost("/v1/documents/{userId:guid}/{customerId:guid}/abandon", async (
                 Guid userId,
                 Guid customerId,
@@ -54,8 +54,8 @@ public static class ProcessEndpoints
 
                 return operation;
             });
-        
-        
+
+
         app.MapPost("/v1/documents/{userId:guid}/{customerId:guid}/start", async (
                 Guid userId,
                 Guid customerId,
@@ -69,7 +69,7 @@ public static class ProcessEndpoints
             .DisableAntiforgery()
             .WithName("startProcess")
             .WithTags(TagProcesses)
-            .Produces<ProcessReport>(StatusCodes.Status200OK)
+            .Produces<ProcessReport>()
             .Produces(StatusCodes.Status400BadRequest)
             .WithOpenApi(operation =>
             {
@@ -86,7 +86,7 @@ public static class ProcessEndpoints
             {
                 using var cts = new CancellationTokenSource(timeout);
                 await mediator.Send(new FinishProcessCommand(userId, customerId), cts.Token);
-                
+
                 return Results.NoContent();
             })
             .DisableAntiforgery()
@@ -108,12 +108,12 @@ public static class ProcessEndpoints
             {
                 using var cts = new CancellationTokenSource(timeout);
                 var report = await mediator.Send(new TrackProcessQuery(processId), cts.Token);
-                
+
                 return Results.Ok(report);
             })
             .WithName("trackProcess")
             .WithTags(TagProcesses)
-            .Produces<ProcessReport>(StatusCodes.Status200OK)
+            .Produces<ProcessReport>()
             .Produces(StatusCodes.Status404NotFound)
             .WithOpenApi(operation =>
             {

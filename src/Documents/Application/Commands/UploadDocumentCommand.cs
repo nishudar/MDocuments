@@ -9,7 +9,7 @@ namespace Documents.Application.Commands;
 public record UploadDocumentCommand(DocumentUploadModel UploadedModel) : IRequest<Guid>;
 
 public class UploadDocumentHnandler(
-    IDomainEventDispatcher dispatcher, 
+    IDomainEventDispatcher dispatcher,
     IDocumentInventoryRepository repository,
     IStorageService storageService)
     : IRequestHandler<UploadDocumentCommand, Guid>
@@ -17,7 +17,7 @@ public class UploadDocumentHnandler(
     public async Task<Guid> Handle(UploadDocumentCommand request, CancellationToken cancellationToken)
     {
         //Here i'd call user & consumer domain services to verify the users
-        
+
         var upload = request.UploadedModel;
         var documentInventory = await repository.GetDocumentInventory(cancellationToken);
         var document = new Document
@@ -26,7 +26,7 @@ public class UploadDocumentHnandler(
             Name = upload.FileName,
             UserId = upload.UserId,
             CustomerId = upload.CustomerId,
-            DocumenType = upload.DocumentType,
+            DocumenType = upload.DocumentType
         };
         documentInventory.ValidateDocument(document);
         var uploadResponse = await storageService.UploadFile(
@@ -39,7 +39,7 @@ public class UploadDocumentHnandler(
         document.SetFileId(uploadResponse.FileId);
         documentInventory.AddDocument(document);
         await dispatcher.DispatchEvents(documentInventory.BusinessEvents, cancellationToken);
-        
+
         return document.Id;
     }
 }

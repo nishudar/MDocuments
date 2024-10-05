@@ -7,8 +7,10 @@ using NotificationHub.Notifications;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
-var seqUrl = builder.Configuration["Seq:Server"] ?? throw new ArgumentException("Seq server url needs to be configured");
-var kafkaUrl = builder.Configuration["Kafka:Server"] ?? throw new ArgumentException("Kafka server url needs to be configured");
+var seqUrl = builder.Configuration["Seq:Server"] ??
+             throw new ArgumentException("Seq server url needs to be configured");
+var kafkaUrl = builder.Configuration["Kafka:Server"] ??
+               throw new ArgumentException("Kafka server url needs to be configured");
 
 Log.Logger = Seq.CreateSeqLogger(seqUrl);
 builder.Host.UseSerilog();

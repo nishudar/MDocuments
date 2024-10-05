@@ -6,6 +6,7 @@ namespace Storage.Infrastructure;
 public class FileReader : IFileReader
 {
     private readonly string _storageDirectory;
+
     public FileReader(string storageDirectory)
     {
         _storageDirectory = storageDirectory ?? throw new ArgumentNullException(nameof(storageDirectory));

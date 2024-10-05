@@ -6,6 +6,7 @@ namespace Storage.Infrastructure;
 public class FileWriter : IFileWriter
 {
     private readonly string _storageDirectory;
+
     public FileWriter(string storageDirectory)
     {
         _storageDirectory = storageDirectory ?? throw new ArgumentNullException(nameof(storageDirectory));

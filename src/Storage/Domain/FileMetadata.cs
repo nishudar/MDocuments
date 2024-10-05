@@ -26,7 +26,7 @@ public partial record FileMetadata
             FilePath = filePath,
             Created = DateTime.UtcNow
         };
-        
+
         return metadata;
     }
 

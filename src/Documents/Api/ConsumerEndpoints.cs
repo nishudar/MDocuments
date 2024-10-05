@@ -10,7 +10,7 @@ namespace Documents.Api;
 public static class CustomersEndpoints
 {
     private const string TagCustomers = "Customers";
-    
+
     public static void MapConsumerEndpoints(this IEndpointRouteBuilder app, TimeSpan timeout)
     {
         app.MapGet("/v1/document/customer", async (
@@ -32,8 +32,8 @@ public static class CustomersEndpoints
                 operation.Description = "Get list of customers and assigned business users";
                 return operation;
             });
-        
-        
+
+
         app.MapPost("/v1/documents/users/{userId:guid}/customers", async (
                 [FromBody] AssignCustomerRequest customer,
                 [FromRoute] Guid userId,
@@ -42,13 +42,13 @@ public static class CustomersEndpoints
             {
                 using var cts = new CancellationTokenSource(timeout);
                 var result = await mediator.Send(new AssignCustomerCommand(customer.Name, userId), cts.Token);
-                
+
                 return Results.Ok(new IdResponse(result.Id));
             })
             .DisableAntiforgery()
             .WithName("assignCustomer")
             .WithTags(TagCustomers)
-            .Produces<IdResponse>(StatusCodes.Status200OK)
+            .Produces<IdResponse>()
             .Produces(StatusCodes.Status400BadRequest)
             .WithOpenApi(operation =>
             {
@@ -58,9 +58,5 @@ public static class CustomersEndpoints
                 userIdParam.Description = "The unique identifier of the business user.";
                 return operation;
             });
-
     }
 }
-
-
-

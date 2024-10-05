@@ -9,6 +9,6 @@ public class Customer : Entity
 
     public void ReassignUser(Customer customer)
     {
-        this.AssignedUserId = customer.AssignedUserId;
+        AssignedUserId = customer.AssignedUserId;
     }
 }

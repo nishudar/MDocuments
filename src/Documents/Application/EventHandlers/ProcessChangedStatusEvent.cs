@@ -15,7 +15,9 @@ public class ProcessChangedStatusEventHandler(
     {
         var process = domainEvent.Process;
         await repository.UpdateProcessStatus(process, cancellationToken);
-        
-        await mediator.Publish(new ProcessStatusUpdateIntegrationEvent(process.Id, process.BusinessUserId, process.CustomerId, process.Status.ToString()), cancellationToken);
-    }   
+
+        await mediator.Publish(
+            new ProcessStatusUpdateIntegrationEvent(process.Id, process.BusinessUserId, process.CustomerId,
+                process.Status.ToString()), cancellationToken);
+    }
 }

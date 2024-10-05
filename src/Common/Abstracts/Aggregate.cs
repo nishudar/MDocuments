@@ -11,8 +11,12 @@ public interface IAggregate
 
 public abstract class Aggregate : IAggregate
 {
-    public Guid Id { get; init; }
     private readonly List<IDomainEvent> _businessEvents = [];
+    public Guid Id { get; init; }
     public ICollection<IDomainEvent> BusinessEvents => _businessEvents.ToArray();
-    protected void AddBusinessEvent(IDomainEvent businessEvent) => _businessEvents.Add(businessEvent);
+
+    protected void AddBusinessEvent(IDomainEvent businessEvent)
+    {
+        _businessEvents.Add(businessEvent);
+    }
 }

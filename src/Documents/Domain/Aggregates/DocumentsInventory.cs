@@ -15,21 +15,22 @@ public class DocumentsInventory(
     ICollection<Process> processes)
     : Aggregate, IDocumentsInventory
 {
-    private List<BusinessUser> Users { get; set; } = users.ToList();
+    private List<BusinessUser> Users { get; } = users.ToList();
     private List<Document> Documents { get; set; } = processes.SelectMany(process => process.Documents).ToList();
-    private List<Customer> Customers { get; set; } = customers.ToList();
-    private List<DocumentType> AllowedDocumentTypes { get; set; } = documentTypes.ToList();
-    private List<Process> Processes { get; set; } = processes.ToList();
-    
+    private List<Customer> Customers { get; } = customers.ToList();
+    private List<DocumentType> AllowedDocumentTypes { get; } = documentTypes.ToList();
+    private List<Process> Processes { get; } = processes.ToList();
+
     public Process StartProcess(Guid businessUserId, Guid customerId)
     {
         var user = Users.Find(u => u.Id == businessUserId);
         var customer = Customers.Find(c => c.Id == customerId);
-        var existingProcess = Processes.Find(process => process.BusinessUserId == businessUserId && process.CustomerId == customerId);
-        
-        if(user is null)
+        var existingProcess = Processes.Find(process =>
+            process.BusinessUserId == businessUserId && process.CustomerId == customerId);
+
+        if (user is null)
             throw new UserDoesNotExistException(businessUserId);
-        if(customer is null)
+        if (customer is null)
             throw new CustomerDoesNotExistException(customerId);
         if (existingProcess is {Status: ProcessStatus.Started})
             throw new ProcessAlreadyStartedException(customerId, businessUserId, existingProcess.Id);
@@ -40,12 +41,12 @@ public class DocumentsInventory(
             BusinessUserId = businessUserId,
             Id = Guid.NewGuid(),
             Documents = [],
-            AllowedDocumentTypes = AllowedDocumentTypes.ToArray(),
+            AllowedDocumentTypes = AllowedDocumentTypes.ToArray()
         };
-        
+
         Processes.Add(newProcess);
-        AddBusinessEvent(new ProcessChangedStatusEvent{Process = newProcess});
-        
+        AddBusinessEvent(new ProcessChangedStatusEvent {Process = newProcess});
+
         return newProcess;
     }
 
@@ -55,9 +56,9 @@ public class DocumentsInventory(
         var customer = Customers.Find(c => c.Id == customerId);
         var existingProcess = Processes.Find(process =>
             process.BusinessUserId == businessUserId && process.CustomerId == customerId);
-        if(user is null)
+        if (user is null)
             throw new UserDoesNotExistException(businessUserId);
-        if(customer is null)
+        if (customer is null)
             throw new CustomerDoesNotExistException(customerId);
         if (existingProcess is null)
             throw new ProcessCannotChangeStatusException("not started");
@@ -70,26 +71,27 @@ public class DocumentsInventory(
         }
 
         existingProcess.SetStatus(ProcessStatus.Finished);
-        AddBusinessEvent(new ProcessChangedStatusEvent{Process = existingProcess});
+        AddBusinessEvent(new ProcessChangedStatusEvent {Process = existingProcess});
     }
-    
+
     public void AbandonProcess(Guid businessUserId, Guid customerId)
     {
         var user = Users.Find(u => u.Id == businessUserId);
         var customer = Customers.Find(c => c.Id == customerId);
-        var process = Processes.Find(process => process.BusinessUserId == businessUserId && process.CustomerId == customerId);
-        
-        if(user is null)
+        var process = Processes.Find(process =>
+            process.BusinessUserId == businessUserId && process.CustomerId == customerId);
+
+        if (user is null)
             throw new UserDoesNotExistException(businessUserId);
-        if(customer is null)
+        if (customer is null)
             throw new CustomerDoesNotExistException(customerId);
         if (process is null)
             throw new ProcessCannotChangeStatusException("not started");
-        if(process.Status is ProcessStatus.Finished)
+        if (process.Status is ProcessStatus.Finished)
             throw new ProcessCannotChangeStatusException("already finished", process.Id);
-        
+
         process.SetStatus(ProcessStatus.Abandoned);
-        AddBusinessEvent(new ProcessChangedStatusEvent{Process = process});
+        AddBusinessEvent(new ProcessChangedStatusEvent {Process = process});
     }
 
     public void SetBusinessUser(BusinessUser user)
@@ -106,7 +108,7 @@ public class DocumentsInventory(
             AddBusinessEvent(new BusinessUserAddedEvent {User = user});
         }
     }
-    
+
     public void AssignCustomer(Customer customer)
     {
         var existingUser = Users.Find(u => u.Id == customer.AssignedUserId);
@@ -116,32 +118,34 @@ public class DocumentsInventory(
         if (existingCustomer is null)
         {
             Customers.Add(customer.DeepClone());
-            AddBusinessEvent(new CustomerAddedEvent{Customer = customer});
+            AddBusinessEvent(new CustomerAddedEvent {Customer = customer});
         }
-        else if(existingCustomer.AssignedUserId != customer.AssignedUserId)
+        else if (existingCustomer.AssignedUserId != customer.AssignedUserId)
         {
             customer.ReassignUser(customer);
-            AddBusinessEvent(new CustomerReassignedEvent{Customer = customer});
+            AddBusinessEvent(new CustomerReassignedEvent {Customer = customer});
         }
     }
 
     public void ValidateDocument(Document document)
     {
-        var existingProcess = Processes.Find(process => process.BusinessUserId == document.UserId && process.CustomerId == document.CustomerId);
-        if(existingProcess is null)
+        var existingProcess = Processes.Find(process =>
+            process.BusinessUserId == document.UserId && process.CustomerId == document.CustomerId);
+        if (existingProcess is null)
             throw new ProcessForDocumentNotFoundException(document.CustomerId, document.UserId);
         existingProcess.ValidateDocument(document);
     }
-        
+
     public void AddDocument(Document document)
     {
-        var process = Processes.Find(process => process.BusinessUserId == document.UserId && process.CustomerId == document.CustomerId);
-        if(process is null)
+        var process = Processes.Find(process =>
+            process.BusinessUserId == document.UserId && process.CustomerId == document.CustomerId);
+        if (process is null)
             throw new ProcessForDocumentNotFoundException(document.CustomerId, document.UserId);
         process.AddDocument(document.DeepClone());
         AddBusinessEvent(new DocumentAddedEvent {Document = document, Process = process});
     }
-    
+
     public ProcessReport GetReport(Guid processId)
     {
         var process = Processes.Find(process => process.Id == processId);
@@ -158,17 +162,31 @@ public class DocumentsInventory(
             .Select(d => new DocumentWithType(d.Name, d.DocumenType))
             .ToArray();
 
-        var report = new ProcessReport(processId, user?.Id, customer?.Id, user?.Name!, customer?.Name!, requiredDocumentTypes, providedDocuments);
+        var report = new ProcessReport(processId, user?.Id, customer?.Id, user?.Name!, customer?.Name!,
+            requiredDocumentTypes, providedDocuments);
         AddBusinessEvent(new ProcessReportGeneratedEvent {ProcessId = processId, ProcessReport = report});
-        
+
         return report;
     }
 
-    public Document? GetDocument(Guid documentId) 
-        =>  Processes.SelectMany(process => process.Documents)
+    public Document? GetDocument(Guid documentId)
+    {
+        return Processes.SelectMany(process => process.Documents)
             .FirstOrDefault(d => d.Id == documentId);
+    }
 
-    public IEnumerable<BusinessUser> GetUsers() => Users.ToArray();
-    public IEnumerable<Customer> GetCustomers() => Customers.ToArray();
-    public IEnumerable<Process> GetProcesses() => Processes.ToArray();
+    public IEnumerable<BusinessUser> GetUsers()
+    {
+        return Users.ToArray();
+    }
+
+    public IEnumerable<Customer> GetCustomers()
+    {
+        return Customers.ToArray();
+    }
+
+    public IEnumerable<Process> GetProcesses()
+    {
+        return Processes.ToArray();
+    }
 }

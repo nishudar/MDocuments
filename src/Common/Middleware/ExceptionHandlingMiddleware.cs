@@ -1,11 +1,9 @@
+using System.Text.Json;
 using Common.Abstracts;
-
-namespace Common.Middleware;
-
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System.Text.Json;
-using System.Threading.Tasks;
+
+namespace Common.Middleware;
 
 public class ExceptionHandlingMiddleware(RequestDelegate next)
 {
@@ -30,7 +28,6 @@ public class ExceptionHandlingMiddleware(RequestDelegate next)
 
             var problemDetailsJson = JsonSerializer.Serialize(problemDetails);
             await context.Response.WriteAsync(problemDetailsJson);
-
         }
         catch (Exception ex)
         {

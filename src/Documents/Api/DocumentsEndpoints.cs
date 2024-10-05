@@ -9,6 +9,7 @@ namespace Documents.Api;
 public static class DocumentEndpoints
 {
     private const string TagDocuments = "Documents";
+
     public static void MapDocumentsEndpoints(this IEndpointRouteBuilder app, TimeSpan timeout)
     {
         app.MapPost("/v1/document/files/upload", async (
@@ -18,7 +19,7 @@ public static class DocumentEndpoints
             {
                 using var cts = new CancellationTokenSource(timeout);
                 var result = await mediator.Send(new UploadDocumentCommand(upload), cts.Token);
-                
+
                 return Results.Ok(new IdResponse(result));
             })
             .DisableAntiforgery()
@@ -40,8 +41,8 @@ public static class DocumentEndpoints
             ) =>
             {
                 using var cts = new CancellationTokenSource(timeout);
-                var file =  await mediator.Send(new DownloadFileQuery(documentId), cts.Token);
-                
+                var file = await mediator.Send(new DownloadFileQuery(documentId), cts.Token);
+
                 Results.File(file.FileStream, file.ContentType, file.FileName);
             })
             .DisableAntiforgery()

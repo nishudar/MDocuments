@@ -46,6 +46,5 @@ public class Process : Entity, IProcess
             throw new DocumentTypeNotAllowedException(document.DocumenType, Id);
         if (!allowedDocumentType.MultipleAllowed && Documents.Exists(d => d.DocumenType == document.DocumenType))
             throw new DuplicatedDocumentTypeNotAllowedException(document.DocumenType, Id);
-
     }
 }

@@ -7,13 +7,13 @@ namespace Documents.Application.Commands;
 
 public record AssignCustomerCommand(string Name, Guid UserId) : IRequest<Customer>;
 
-public class AssignCustomerCommandHandler(IDomainEventDispatcher dispatcher, IDocumentInventoryRepository repository) 
+public class AssignCustomerCommandHandler(IDomainEventDispatcher dispatcher, IDocumentInventoryRepository repository)
     : IRequestHandler<AssignCustomerCommand, Customer>
 {
     public async Task<Customer> Handle(AssignCustomerCommand command, CancellationToken cancellationToken)
     {
         //Here i'd call user & consumer domain services to verify the users
-        
+
         var documentInventory = await repository.GetDocumentInventory(cancellationToken);
         var id = Guid.NewGuid();
         var customer = new Customer
@@ -24,7 +24,7 @@ public class AssignCustomerCommandHandler(IDomainEventDispatcher dispatcher, IDo
         };
         documentInventory.AssignCustomer(customer);
         await dispatcher.DispatchEvents(documentInventory.BusinessEvents, cancellationToken);
-        
+
         return customer;
     }
 }

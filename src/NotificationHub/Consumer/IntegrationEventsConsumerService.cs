@@ -22,7 +22,7 @@ public class KafkaConsumerService(
             BootstrapServers = _configuration.Server,
             AutoOffsetReset = AutoOffsetReset.Latest
         };
-        
+
         //workaround to aviod logging error on startup(topic not created yet)
         await Task.Delay(3000, stoppingToken);
         using var consumer = new ConsumerBuilder<Ignore, string>(config).Build();
@@ -31,7 +31,6 @@ public class KafkaConsumerService(
         try
         {
             while (!stoppingToken.IsCancellationRequested)
-            {
                 try
                 {
                     var consumeResult = consumer.Consume(stoppingToken);
@@ -40,8 +39,9 @@ public class KafkaConsumerService(
                     if (message is not null)
                     {
                         await hubContext.Clients.All.SendAsync("ReceiveMessage", message,
-                            cancellationToken: stoppingToken);
-                        logger.LogInformation("Message broadcasted on signalR: {Message}", JsonSerializer.Serialize(message, options: new () {WriteIndented = false}));
+                            stoppingToken);
+                        logger.LogInformation("Message broadcasted on signalR: {Message}",
+                            JsonSerializer.Serialize(message, new JsonSerializerOptions {WriteIndented = false}));
                     }
                 }
                 catch (ConsumeException e)
@@ -49,7 +49,6 @@ public class KafkaConsumerService(
                     logger.LogError(e, "Kafka error: {ErrorReason}", e.Error.Reason);
                     await Task.Delay(3000, stoppingToken);
                 }
-            }
         }
         catch (OperationCanceledException)
         {

@@ -1,14 +1,17 @@
 using Serilog;
+using Serilog.Core;
 
 namespace Common.Seq;
 
 public static class Seq
 {
-    public static Serilog.Core.Logger CreateSeqLogger(string seqServerUrl) 
-        => new LoggerConfiguration()
+    public static Logger CreateSeqLogger(string seqServerUrl)
+    {
+        return new LoggerConfiguration()
             .MinimumLevel.Debug()
-            .WriteTo.Console() 
+            .WriteTo.Console()
             .WriteTo.Seq(seqServerUrl)
             .Enrich.FromLogContext()
             .CreateLogger();
+    }
 }

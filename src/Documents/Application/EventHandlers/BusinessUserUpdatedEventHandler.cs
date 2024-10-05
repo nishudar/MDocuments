@@ -4,7 +4,8 @@ using Documents.Domain.Events;
 
 namespace Documents.Application.EventHandlers;
 
-public class BusinessUserUpdatedEventHandler(IDocumentInventoryRepository repository) : IDomainEventHandler<BusinessUserUpdatedEvent>
+public class BusinessUserUpdatedEventHandler(IDocumentInventoryRepository repository)
+    : IDomainEventHandler<BusinessUserUpdatedEvent>
 {
     public async Task Handle(BusinessUserUpdatedEvent businessUser, CancellationToken cancellationToken)
     {

@@ -3,12 +3,10 @@ using Microsoft.Extensions.Logging;
 
 namespace Common.DomainEvents;
 
-using System.Threading;
-using System.Threading.Tasks;
-
 public class DomainEventDispatcher(IMediator mediator, ILogger<DomainEventDispatcher> logger) : IDomainEventDispatcher
 {
     private readonly SemaphoreSlim _semaphoreSlim = new(1, 1);
+
     public async Task DispatchEvents(IEnumerable<INotification> domainEvents, CancellationToken ct = default)
     {
         await _semaphoreSlim.WaitAsync(ct);

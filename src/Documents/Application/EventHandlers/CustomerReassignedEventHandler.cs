@@ -4,7 +4,8 @@ using Documents.Domain.Events;
 
 namespace Documents.Application.EventHandlers;
 
-public class CustomerReassignedEventHandler(IDocumentInventoryRepository repository) : IDomainEventHandler<CustomerReassignedEvent>
+public class CustomerReassignedEventHandler(IDocumentInventoryRepository repository)
+    : IDomainEventHandler<CustomerReassignedEvent>
 {
     public async Task Handle(CustomerReassignedEvent domainEvent, CancellationToken cancellationToken)
     {

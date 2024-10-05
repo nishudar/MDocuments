@@ -22,7 +22,7 @@ services:
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
     ports:
-      - "9092:9092"    
+      - "9092:9092"
     networks:
       - md_services_network
     restart: unless-stopped
@@ -67,7 +67,7 @@ services:
     networks:
       - md_services_network
     restart: unless-stopped
-
+  
   
   documents-service:
     build:

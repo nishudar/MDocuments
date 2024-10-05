@@ -6,13 +6,13 @@ namespace Documents.Application.Commands;
 
 public record AbandonProcessCommand(Guid UserId, Guid CustomerId) : IRequest<Unit>;
 
-public class AbandonProcessCommandHandler(IDomainEventDispatcher dispatcher, IDocumentInventoryRepository repository) 
+public class AbandonProcessCommandHandler(IDomainEventDispatcher dispatcher, IDocumentInventoryRepository repository)
     : IRequestHandler<AbandonProcessCommand, Unit>
 {
     public async Task<Unit> Handle(AbandonProcessCommand command, CancellationToken cancellationToken)
     {
         //Here i'd call user & consumer domain services to verify the users
-        
+
         var documentInventory = await repository.GetDocumentInventory(cancellationToken);
         documentInventory.AbandonProcess(command.UserId, command.CustomerId);
         await dispatcher.DispatchEvents(documentInventory.BusinessEvents, cancellationToken);
