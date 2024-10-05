@@ -1,5 +1,4 @@
 using System.Text.Json;
-using Common.IntegrationEvents;
 using Common.IntegrationEvents.Events;
 using Confluent.Kafka;
 using Microsoft.AspNetCore.SignalR;

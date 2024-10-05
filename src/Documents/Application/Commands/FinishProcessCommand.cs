@@ -1,7 +1,4 @@
-﻿using Common.Abstracts;
-using Common.DomainEvents;
-using Common.IntegrationEvents;
-using Common.IntegrationEvents.Events;
+﻿using Common.DomainEvents;
 using Documents.Application.Interfaces;
 using MediatR;
 

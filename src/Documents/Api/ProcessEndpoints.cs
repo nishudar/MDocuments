@@ -1,6 +1,4 @@
-using Common.DomainEvents;
 using Documents.Application.Commands;
-using Documents.Application.Interfaces;
 using Documents.Application.Queries;
 using Documents.Domain.Entities;
 using Documents.Domain.ValueTypes;

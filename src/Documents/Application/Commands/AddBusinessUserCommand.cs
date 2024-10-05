@@ -1,5 +1,4 @@
 ﻿using Common.DomainEvents;
-using Documents.Api.Models;
 using Documents.Application.Interfaces;
 using Documents.Domain.Entities;
 using MediatR;

@@ -2,7 +2,6 @@ using System.Text;
 using System.Text.Json;
 using Common.IntegrationEvents.Events;
 using Confluent.Kafka;
-using Microsoft.Extensions.Logging;
 using Serilog;
 
 namespace Common.IntegrationEvents.Kafka;

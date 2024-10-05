@@ -1,7 +1,6 @@
 using Documents.Api.Models;
 using Documents.Application.Commands;
 using Documents.Application.Queries;
-using Documents.Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 

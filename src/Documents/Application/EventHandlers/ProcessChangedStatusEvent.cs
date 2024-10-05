@@ -1,5 +1,4 @@
 using Common.DomainEvents;
-using Common.IntegrationEvents;
 using Common.IntegrationEvents.Events;
 using Documents.Application.Interfaces;
 using Documents.Domain.Events;

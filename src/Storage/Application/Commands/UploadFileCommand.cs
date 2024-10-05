@@ -1,5 +1,4 @@
 using Common.Abstracts;
-using Common.IntegrationEvents;
 using Common.IntegrationEvents.Events;
 using MediatR;
 using Storage.Application.Interfaces;
