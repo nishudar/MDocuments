@@ -2,10 +2,11 @@ using System.Text;
 using System.Text.Json;
 using Common.IntegrationEvents.Events;
 using Confluent.Kafka;
+using Microsoft.Extensions.Logging;
 
 namespace Common.IntegrationEvents.Kafka;
 
-public class KafkaIntegrationEventProducer(string bootstrapServers) : IIntegrationEventProducer
+public class KafkaIntegrationEventProducer(string bootstrapServers, ILogger<KafkaIntegrationEventProducer> logger) : IIntegrationEventProducer
 {
     private readonly ProducerConfig _config = new()
     {
@@ -41,19 +42,25 @@ public class KafkaIntegrationEventProducer(string bootstrapServers) : IIntegrati
         CancellationToken cancellationToken) 
         where T : IIntegrationEvent
     {
-        var producer = new ProducerBuilder<string, T?>(_config)
-            .SetValueSerializer(new IntegrationEventSerializer<T?>())
-            .Build();
-        var message = new Message<string, T?>
+        try
         {
-            Key = key,
-            Value = eventObject,
-            Headers = new Headers
+            var producer = new ProducerBuilder<string, T?>(_config)
+                .SetValueSerializer(new IntegrationEventSerializer<T?>())
+                .Build();
+            var message = new Message<string, T?>
             {
-                { "eventType", Encoding.UTF8.GetBytes(typeof(T).Name) } 
-            }
-        };
-		
-        await producer.ProduceAsync(topic, message, cancellationToken);
+                Key = key,
+                Value = eventObject,
+                Headers = new Headers
+                {
+                    {"eventType", Encoding.UTF8.GetBytes(typeof(T).Name)}
+                }
+            };
+            await producer.ProduceAsync(topic, message, cancellationToken);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "{ExMessage} + {InnerExceptionMessage}", ex.Message, ex.InnerException?.Message);
+        }
     }
 }
