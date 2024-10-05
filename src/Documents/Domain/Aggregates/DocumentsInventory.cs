@@ -134,11 +134,11 @@ public class DocumentsInventory(
         
     public void AddDocument(Document document)
     {
-        var existingProcess = Processes.Find(process => process.BusinessUserId == document.UserId && process.CustomerId == document.CustomerId);
-        if(existingProcess is null)
+        var process = Processes.Find(process => process.BusinessUserId == document.UserId && process.CustomerId == document.CustomerId);
+        if(process is null)
             throw new ProcessForDocumentNotFoundException(document.CustomerId, document.UserId);
-        existingProcess.AddDocument(document.DeepClone());
-        AddBusinessEvent(new DocumentAddedEvent {Document = document});
+        process.AddDocument(document.DeepClone());
+        AddBusinessEvent(new DocumentAddedEvent {Document = document, Process = process});
     }
     
     public ProcessReport GetReport(Guid processId)
