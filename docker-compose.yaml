@@ -27,7 +27,7 @@ services:
       - md_services_network
     restart: unless-stopped
 
-  kafka-client:
+  kafka-create-topics:
     image: bitnami/kafka:latest
     container_name: kafka-create-topics
     command:
@@ -67,6 +67,7 @@ services:
     networks:
       - md_services_network
     restart: unless-stopped
+
   
   documents-service:
     build:
