@@ -6,9 +6,10 @@ namespace Common.Mediatr;
 
 public static class Extension
 {
-    public static void AddMediatrWithPipelines(this IServiceCollection serviceCollection, Assembly assembly)
+    public static void AddMediatrWithPipelines(this IServiceCollection services, Assembly assembly)
     {
-        serviceCollection.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(assembly));
-        serviceCollection.AddTransient(typeof(IPipelineBehavior<,>), typeof(LoggingBehavior<,>));
+        services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(assembly));
+        services.AddTransient(typeof(IPipelineBehavior<,>), typeof(RequestLoggingBehavior<,>));
+        services.AddTransient(typeof(IPipelineBehavior<,>), typeof(NotificationLoggingBehavior<,>));
     }
 }
