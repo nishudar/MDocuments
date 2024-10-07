@@ -65,7 +65,7 @@ internal class DocumentInventoryRepository : IDocumentInventoryRepository
         if (existingProcess is null)
             throw new ProcessNotFoundException();
         
-        process.SetStatus(process.Status);
+        existingProcess.SetStatus(process.Status);
 
         return Task.CompletedTask;
     }
