@@ -2,6 +2,7 @@
 using Force.DeepCloner;
 using Users.Domain.DomainEvents;
 using Users.Domain.Entities;
+using Users.Domain.Exceptions;
 
 namespace Users.Domain.Aggregates;
 
@@ -26,6 +27,9 @@ internal class UsersInventory(ICollection<BusinessUser> users)
     public Task<BusinessUser> UpdateBusinessUser(Guid guid, string name)
     {
         var existingUser = Users.Find(u => u.Id == guid);
+        if (existingUser is null)
+            throw new UserDoesNotExistException(guid);
+        
         existingUser.Name = name;
         AddBusinessEvent(new BusinessUserUpdatedEvent
         {
