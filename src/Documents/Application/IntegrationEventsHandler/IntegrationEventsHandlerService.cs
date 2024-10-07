@@ -25,7 +25,7 @@ internal sealed class IntegrationEventsHandlerService : BackgroundService
             BootstrapServers = kafkaServer,
             AutoOffsetReset = AutoOffsetReset.Earliest
         };
-
+        
         _consumer = new ConsumerBuilder<Ignore, string>(config).Build();
     }
 
@@ -52,11 +52,11 @@ internal sealed class IntegrationEventsHandlerService : BackgroundService
         }, stoppingToken);
     }
 
-    private void HandleMessage(ConsumeResult<Ignore, string> consumeResult)
+    private void HandleMessage(ConsumeResult<Ignore, string> message)
     {
         try
         {
-            var eventType = GetEventTypeFromHeaders(consumeResult.Message.Headers);
+            var eventType = GetEventTypeFromHeaders(message.Message.Headers);
 
             if (eventType is null)
             {
@@ -66,13 +66,17 @@ internal sealed class IntegrationEventsHandlerService : BackgroundService
             switch (eventType)
             {
                 case nameof(UserCreatedIntegrationEvent):
-                    var userCreatedEvent = JsonSerializer.Deserialize<UserCreatedIntegrationEvent>(consumeResult.Message.Value);
+                    _logger.LogDebug("Documents service handling integration event: {NotificationName} {@Notification}", nameof(UserCreatedIntegrationEvent), message);
+                    var userCreatedEvent = JsonSerializer.Deserialize<UserCreatedIntegrationEvent>(message.Message.Value);
                     HandleUserCreatedEvent(userCreatedEvent!);
+                    _logger.LogInformation("Documents service finished integration event: {NotificationName} {@Response}", nameof(UserCreatedIntegrationEvent), message);
                     break;
 
                 case nameof(UserUpdatedIntegrationEvent):
-                    var userUpdatedEvent = JsonSerializer.Deserialize<UserUpdatedIntegrationEvent>(consumeResult.Message.Value);
+                    _logger.LogDebug("Documents service handling integration event: {NotificationName} {@Notification}", nameof(UserUpdatedIntegrationEvent), message);
+                    var userUpdatedEvent = JsonSerializer.Deserialize<UserUpdatedIntegrationEvent>(message.Message.Value);
                     HandleUserUpdatedEvent(userUpdatedEvent!);
+                    _logger.LogInformation("Documents service finished integration event: {NotificationName} {@Response}", nameof(UserUpdatedIntegrationEvent), message);
                     break;
 
                 default:

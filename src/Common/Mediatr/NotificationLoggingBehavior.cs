@@ -20,13 +20,6 @@ public class NotificationLoggingBehavior<TNotification, TResponse>(ILogger<Notif
                 logger.LogInformation("{Assembly} service finished domain event: {NotificationName} {@Response}", request.GetType().Assembly.GetName().Name, typeof(TNotification).Name, response);
                 return response;
             }
-            case IIntegrationEvent:
-            {
-                logger.LogDebug("{Assembly} service handling integration event: {NotificationName} {@Notification}", request.GetType().Assembly.GetName().Name, typeof(TNotification).Name, request);
-                var response = await next();
-                logger.LogInformation("{Assembly} service finished integration event: {NotificationName} {@Response}", request.GetType().Assembly.GetName().Name, typeof(TNotification).Name, response);
-                return response;
-            }
             default:
             {
                 logger.LogDebug("{Assembly} service handling event:  {NotificationName} {@Notification}", request.GetType().Assembly.GetName().Name,  typeof(TNotification).Name, request);
