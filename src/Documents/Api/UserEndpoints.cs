@@ -32,7 +32,7 @@ internal static class UserEndpoints
                 operation.Description = "Get list of business users";
                 return operation;
             });
-
+        
         app.MapPost("/v1/document/user", async (
                 [FromBody] AddUserModel businessUser,
                 IMediator mediator) =>
@@ -49,7 +49,7 @@ internal static class UserEndpoints
             .Produces(StatusCodes.Status400BadRequest)
             .WithOpenApi(operation =>
             {
-                operation.Summary = "Add a business user";
+                operation.Summary = "Add a business user. This route is obsolete. Please use Users service instead";
                 operation.Description = "Adds a new business user to the document inventory.";
                 return operation;
             });
@@ -71,7 +71,7 @@ internal static class UserEndpoints
             .Produces(StatusCodes.Status400BadRequest)
             .WithOpenApi(operation =>
             {
-                operation.Summary = "Update a business user";
+                operation.Summary = "Update a business user. This route is obsolete. Please use Users service instead";
                 operation.Description = "Updates the information of an existing business user.";
 
                 return operation;
