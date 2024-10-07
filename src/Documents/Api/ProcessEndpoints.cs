@@ -32,13 +32,13 @@ internal static class ProcessEndpoints
                 return operation;
             });
 
-        app.MapPost("/v1/documents/{userId:guid}/{customerId:guid}/abandon", async (
-                Guid userId,
+        app.MapPost("/v1/documents/{operatorId:guid}/{customerId:guid}/abandon", async (
+                Guid operatorId,
                 Guid customerId,
                 IMediator mediator) =>
             {
                 using var cts = new CancellationTokenSource(timeout);
-                await mediator.Send(new AbandonProcessCommand(userId, customerId), cts.Token);
+                await mediator.Send(new AbandonProcessCommand(operatorId, customerId), cts.Token);
 
                 return Results.NoContent();
             })
@@ -56,13 +56,13 @@ internal static class ProcessEndpoints
             });
 
 
-        app.MapPost("/v1/documents/{userId:guid}/{customerId:guid}/start", async (
-                Guid userId,
+        app.MapPost("/v1/documents/{operatorId:guid}/{customerId:guid}/start", async (
+                Guid operatorId,
                 Guid customerId,
                 IMediator mediator) =>
             {
                 using var cts = new CancellationTokenSource(timeout);
-                var report = await mediator.Send(new StartProcessCommand(userId, customerId), cts.Token);
+                var report = await mediator.Send(new StartProcessCommand(operatorId, customerId), cts.Token);
 
                 return Results.Ok(report);
             })
@@ -79,13 +79,13 @@ internal static class ProcessEndpoints
                 return operation;
             });
 
-        app.MapPost("/v1/documents/{userId:guid}/{customerId:guid}/finish", async (
-                Guid userId,
+        app.MapPost("/v1/documents/{operatorId:guid}/{customerId:guid}/finish", async (
+                Guid operatorId,
                 Guid customerId,
                 IMediator mediator) =>
             {
                 using var cts = new CancellationTokenSource(timeout);
-                await mediator.Send(new FinishProcessCommand(userId, customerId), cts.Token);
+                await mediator.Send(new FinishProcessCommand(operatorId, customerId), cts.Token);
 
                 return Results.NoContent();
             })

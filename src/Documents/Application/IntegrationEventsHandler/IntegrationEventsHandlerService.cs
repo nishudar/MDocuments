@@ -98,25 +98,23 @@ internal sealed class IntegrationEventsHandlerService : BackgroundService
 
     private void HandleUserCreatedEvent(UserCreatedIntegrationEvent userCreatedEvent)
     {
-        _mediator.Publish(new BusinessUserAddedEvent
+        _mediator.Publish(new UserAddedEvent
         {
-            User = new BusinessUser
+            User = new User
             {
                 Name = userCreatedEvent.Name,
-                Id = userCreatedEvent.UserId
+                Id = userCreatedEvent.UserId,
+                Role = userCreatedEvent.Role
             }
         });
     }
 
     private void HandleUserUpdatedEvent(UserUpdatedIntegrationEvent userUpdatedEvent)
     {
-        _mediator.Publish(new BusinessUserUpdatedEvent
+        _mediator.Publish(new UserUpdatedEvent
         {
-            User = new BusinessUser
-            {
-                Name = userUpdatedEvent.Name,
-                Id = userUpdatedEvent.UserId
-            }
+            UserId = userUpdatedEvent.UserId,
+            UserName = userUpdatedEvent.Name
         });
     }
 

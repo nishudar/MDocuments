@@ -1,14 +1,26 @@
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
 using Common.Abstracts;
+using Users.Domain.Enums;
+using Users.Domain.Exceptions;
 
 namespace Users.Domain.Entities;
 
 internal class BusinessUser : Entity
 {
-    [Required] public required string Name { get; set; }
+    private string _name;
 
-    public void Set(BusinessUser user)
+    [Required] public required string Name { get; set; }
+    [Required]
+    public required string Role
     {
-        Name = user.Name;
+        get => _name;
+        [MemberNotNull(nameof(_name))]
+        set
+        {
+            if (!UserRole.Roles.Contains(value))
+                throw new RoleNotExistsException(value);
+            _name = value;
+        }
     }
 }

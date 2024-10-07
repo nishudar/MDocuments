@@ -15,12 +15,7 @@ internal class UpdateBusinessUserCommandHandler(
     public async Task<BusinessUser> Handle(UpdateBusinessUserCommand command, CancellationToken cancellationToken)
     {
         var usersInventory = await repository.GetUsersInventory(cancellationToken);
-        var businessUser = new BusinessUser
-        {
-            Id = command.UserId,
-            Name = command.Name
-        };
-        await usersInventory.UpdateBusinessUser(command.UserId, businessUser);
+        var businessUser = await usersInventory.UpdateBusinessUser(command.UserId, command.Name);
         await dispatcher.DispatchEvents(usersInventory.BusinessEvents, cancellationToken);
 
         return businessUser;

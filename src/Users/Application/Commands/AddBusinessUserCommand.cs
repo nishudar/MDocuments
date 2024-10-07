@@ -5,7 +5,7 @@ using Users.Domain.Entities;
 
 namespace Users.Application.Commands;
 
-internal record AddBusinessUserCommand(string Name) : IRequest<BusinessUser>;
+internal record AddBusinessUserCommand(string Name, string Role) : IRequest<BusinessUser>;
 
 internal class AddBusinessUserCommandHandler(IDomainEventDispatcher dispatcher, IUsersRepository repository)
     : IRequestHandler<AddBusinessUserCommand, BusinessUser>
@@ -13,7 +13,7 @@ internal class AddBusinessUserCommandHandler(IDomainEventDispatcher dispatcher, 
     public async Task<BusinessUser> Handle(AddBusinessUserCommand command, CancellationToken cancellationToken)
     {
         var usersInventory = await repository.GetUsersInventory(cancellationToken);
-        var businessUser = await usersInventory.AddBusinessUser(command.Name);
+        var businessUser = await usersInventory.AddBusinessUser(command.Name, command.Role);
         await dispatcher.DispatchEvents(usersInventory.BusinessEvents, cancellationToken);
 
         return businessUser;

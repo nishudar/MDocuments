@@ -1,3 +1,7 @@
-﻿namespace Documents.Api.Models;
+﻿using System.ComponentModel.DataAnnotations;
 
-internal record AddUserModel(string Name);
+namespace Documents.Api.Models;
+
+internal record AddUserModel([Required]string Name, [Required]string Role)
+{
+}

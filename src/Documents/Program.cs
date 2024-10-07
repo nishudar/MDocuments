@@ -38,8 +38,6 @@ app.UseSwaggerUI();
 app.UseHttpsRedirection();
 var operationTimeout = new TimeSpan(0, 0, 1, 0);
 
-app.MapUserEndpoints(operationTimeout);
-app.MapConsumerEndpoints(operationTimeout);
 app.MapProcessEndpoints(operationTimeout);
 app.MapDocumentsEndpoints(operationTimeout);
 

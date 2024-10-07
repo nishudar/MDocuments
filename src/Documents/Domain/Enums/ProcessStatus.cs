@@ -1,8 +1,10 @@
 namespace Documents.Domain.Enums;
 
-public enum ProcessStatus
+public static class ProcessStatus
 {
-    Started,
-    Finished,
-    Abandoned
+    public const string Started = "started";
+    public const string Finished = "finished";
+    public const string Abandoned = "finished";
+    
+    public static string[] ProcessStatuses => [Started, Finished, Abandoned];
 }

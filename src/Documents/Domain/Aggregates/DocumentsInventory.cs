@@ -9,40 +9,45 @@ using Force.DeepCloner;
 namespace Documents.Domain.Aggregates;
 
 internal class DocumentsInventory(
-    ICollection<BusinessUser> users,
-    ICollection<Customer> customers,
+    ICollection<User> users,
     ICollection<DocumentType> documentTypes,
     ICollection<Process> processes)
     : Aggregate, IDocumentsInventory
 {
-    private List<BusinessUser> Users { get; } = users.ToList();
+    private List<User> Users { get; } = users.ToList();
     private List<Document> Documents { get; set; } = processes.SelectMany(process => process.Documents).ToList();
-    private List<Customer> Customers { get; } = customers.ToList();
     private List<DocumentType> AllowedDocumentTypes { get; } = documentTypes.ToList();
     private List<Process> Processes { get; } = processes.ToList();
 
-    public Process StartProcess(Guid businessUserId, Guid customerId)
+    public Process StartProcess(Guid operatorId, Guid customerId)
     {
-        var user = Users.Find(u => u.Id == businessUserId);
-        var customer = Customers.Find(c => c.Id == customerId);
+        var user = Users.Find(u => u.Id == operatorId);
+        var customer = Users.Find(u => u.Id == customerId);
         var existingProcess = Processes.Find(process =>
-            process.BusinessUserId == businessUserId && process.CustomerId == customerId);
-
+            process.BusinessUserId == operatorId && process.CustomerId == customerId);
+        
         if (user is null)
-            throw new UserDoesNotExistException(businessUserId);
+            throw new UserDoesNotExistException(operatorId);
         if (customer is null)
             throw new CustomerDoesNotExistException(customerId);
-        if (existingProcess is {Status: ProcessStatus.Started})
-            throw new ProcessAlreadyStartedException(customerId, businessUserId, existingProcess.Id);
+        
+        if(user.Role is not UserRole.Operator)
+            throw new NotInRoleException(user.Id, user.Role, UserRole.Operator);
+        if(customer.Role is not UserRole.Customer)
+            throw new NotInRoleException(user.Id, user.Role, UserRole.Customer);
+        
+        if (existingProcess is not null && existingProcess.Status == ProcessStatus.Started)
+            throw new ProcessAlreadyStartedException(customerId, operatorId, existingProcess.Id);
 
         var newProcess = new Process
         {
             CustomerId = customerId,
-            BusinessUserId = businessUserId,
+            BusinessUserId = operatorId,
             Id = Guid.NewGuid(),
             Documents = [],
-            AllowedDocumentTypes = AllowedDocumentTypes.ToArray()
+            AllowedDocumentTypes = AllowedDocumentTypes.ToArray(),
         };
+        newProcess.SetStatus(ProcessStatus.Started);
 
         Processes.Add(newProcess);
         AddBusinessEvent(new ProcessChangedStatusEvent {Process = newProcess});
@@ -53,23 +58,29 @@ internal class DocumentsInventory(
     public void FinishProcess(Guid businessUserId, Guid customerId)
     {
         var user = Users.Find(u => u.Id == businessUserId);
-        var customer = Customers.Find(c => c.Id == customerId);
+        var customer = Users.Find(u => u.Id == customerId);
         var existingProcess = Processes.Find(process =>
             process.BusinessUserId == businessUserId && process.CustomerId == customerId);
+        
         if (user is null)
             throw new UserDoesNotExistException(businessUserId);
         if (customer is null)
             throw new CustomerDoesNotExistException(customerId);
+        
+        if(user.Role is not UserRole.Operator)
+            throw new NotInRoleException(user.Id, user.Role, UserRole.Operator);
+        if(customer.Role is not UserRole.Customer)
+            throw new NotInRoleException(user.Id, user.Role, UserRole.Customer);
+        
         if (existingProcess is null)
             throw new ProcessCannotChangeStatusException("not started");
-        switch (existingProcess)
-        {
-            case {Status: ProcessStatus.Abandoned}:
-                throw new ProcessCannotChangeStatusException("abandoned", existingProcess.Id);
-            case {Status: ProcessStatus.Finished}:
-                throw new ProcessCannotChangeStatusException("already finished", existingProcess.Id);
-        }
+        if (existingProcess is {Status: ProcessStatus.Abandoned})
+            throw new ProcessCannotChangeStatusException("abandoned", existingProcess.Id);
+        if (existingProcess is {Status: ProcessStatus.Finished}) throw new ProcessCannotChangeStatusException("already finished", existingProcess.Id);
 
+        if (!existingProcess.AllDocumentsProvided())
+            throw new ProcessCannotChangeStatusException("There are missing documents");
+        
         existingProcess.SetStatus(ProcessStatus.Finished);
         AddBusinessEvent(new ProcessChangedStatusEvent {Process = existingProcess});
     }
@@ -77,7 +88,7 @@ internal class DocumentsInventory(
     public void AbandonProcess(Guid businessUserId, Guid customerId)
     {
         var user = Users.Find(u => u.Id == businessUserId);
-        var customer = Customers.Find(c => c.Id == customerId);
+        var customer = Users.Find(u => u.Id == customerId);
         var process = Processes.Find(process =>
             process.BusinessUserId == businessUserId && process.CustomerId == customerId);
 
@@ -94,45 +105,36 @@ internal class DocumentsInventory(
         AddBusinessEvent(new ProcessChangedStatusEvent {Process = process});
     }
 
-    public void SetBusinessUser(BusinessUser user)
+    public void AddUser(User user)
     {
         var existingUser = Users.Find(u => u.Id == user.Id);
-        if (existingUser is not null && existingUser.Name != user.Name)
+        if (existingUser is null)
         {
-            existingUser.Set(user);
-            AddBusinessEvent(new BusinessUserUpdatedEvent {User = user});
+            var userToAdd = user.DeepClone(); 
+            Users.Add(userToAdd);
+            AddBusinessEvent(new UserAddedEvent {User = user});
         }
         else
-        {
-            Users.Add(user.DeepClone());
-            AddBusinessEvent(new BusinessUserAddedEvent {User = user});
-        }
+            throw new UserAlreadyExistsException(user.Id);
     }
-
-    public void AssignCustomer(Customer customer)
+    
+    public User UpdateUser(Guid userId, string name)
     {
-        var existingUser = Users.Find(u => u.Id == customer.AssignedUserId);
-        if (existingUser is null)
-            throw new UserDoesNotExistException(customer.AssignedUserId);
-        var existingCustomer = Customers.Find(c => c.Id == customer.Id);
-        if (existingCustomer is null)
-        {
-            Customers.Add(customer.DeepClone());
-            AddBusinessEvent(new CustomerAddedEvent {Customer = customer});
-        }
-        else if (existingCustomer.AssignedUserId != customer.AssignedUserId)
-        {
-            customer.ReassignUser(customer);
-            AddBusinessEvent(new CustomerReassignedEvent {Customer = customer});
-        }
+        var existingUser = Users.Find(u => u.Id == userId);
+        if(existingUser is null)
+            throw new UserDoesNotExistException(userId);
+        existingUser.SetName(name);
+        AddBusinessEvent(new UserAddedEvent() {User = existingUser});
+            
+        return existingUser;
     }
-
+    
     public void ValidateDocument(Document document)
     {
         var existingProcess = Processes.Find(process =>
             process.BusinessUserId == document.UserId && process.CustomerId == document.CustomerId);
         if (existingProcess is null)
-            throw new ProcessForDocumentNotFoundException(document.CustomerId, document.UserId);
+            throw new ProcessNotFoundException(document.CustomerId, document.UserId);
         existingProcess.ValidateDocument(document);
     }
 
@@ -141,7 +143,7 @@ internal class DocumentsInventory(
         var process = Processes.Find(process =>
             process.BusinessUserId == document.UserId && process.CustomerId == document.CustomerId);
         if (process is null)
-            throw new ProcessForDocumentNotFoundException(document.CustomerId, document.UserId);
+            throw new ProcessNotFoundException(document.CustomerId, document.UserId);
         process.AddDocument(document.DeepClone());
         AddBusinessEvent(new DocumentAddedEvent {Document = document, Process = process});
     }
@@ -152,7 +154,7 @@ internal class DocumentsInventory(
         if (process is null)
             throw new NotFoundException("process", processId);
         var user = Users.Find(user => user.Id == process.BusinessUserId);
-        var customer = Customers.Find(customer => customer.Id == process.CustomerId);
+        var customer = Users.Find(u => u.Id == process.CustomerId);
         var requiredDocumentTypes = process.AllowedDocumentTypes
             .Where(document => document.IsRequired)
             .Select(rdtn => rdtn.TypeName)
@@ -175,14 +177,14 @@ internal class DocumentsInventory(
             .FirstOrDefault(d => d.Id == documentId);
     }
 
-    public IEnumerable<BusinessUser> GetUsers()
+    public IEnumerable<User> GetUsers()
     {
         return Users.ToArray();
     }
 
-    public IEnumerable<Customer> GetCustomers()
+    public IEnumerable<User> GetCustomers()
     {
-        return Customers.ToArray();
+        return Users.Where( user => user.Role == UserRole.Customer).ToList();
     }
 
     public IEnumerable<Process> GetProcesses()

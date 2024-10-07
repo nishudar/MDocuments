@@ -9,10 +9,10 @@ public interface IProcess
     Guid BusinessUserId { get; init; }
     List<Document> Documents { get; init; }
     ICollection<DocumentType> AllowedDocumentTypes { get; init; }
-    ProcessStatus Status { get; }
+    string Status { get; }
     Guid Id { get; set; }
     bool AllDocumentsProvided();
-    void SetStatus(ProcessStatus status);
+    void SetStatus(string status);
     void AddDocument(Document document);
     void ValidateDocument(Document document);
 }

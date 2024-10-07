@@ -4,6 +4,7 @@ using Users.Api.Models;
 using Users.Application.Commands;
 using Users.Application.Queries;
 using Users.Domain.Entities;
+using Users.Domain.Enums;
 
 namespace Users.Api;
 
@@ -29,7 +30,7 @@ internal static class UserEndpoints
             .WithOpenApi(operation =>
             {
                 operation.Summary = "Get business users";
-                operation.Description = "Get list of business users";
+                operation.Description = $"Get list of business users";
                 return operation;
             });
 
@@ -38,7 +39,7 @@ internal static class UserEndpoints
                 IMediator mediator) =>
             {
                 using var cts = new CancellationTokenSource(timeout);
-                var user = await mediator.Send(new AddBusinessUserCommand(businessUser.Name), cts.Token);
+                var user = await mediator.Send(new AddBusinessUserCommand(businessUser.Name, businessUser.Role), cts.Token);
 
                 return Results.Ok(new IdResponse(user.Id));
             })
@@ -49,8 +50,8 @@ internal static class UserEndpoints
             .Produces(StatusCodes.Status400BadRequest)
             .WithOpenApi(operation =>
             {
-                operation.Summary = "Add a business user. Replacement of the documents service/user";
-                operation.Description = "Adds a new business user to the document inventory.";
+                operation.Summary = $"Add a user. The role represent user capabilities.  Allowed values: {string.Join(", ", UserRole.Roles)}) ";
+                operation.Description = "Adds a new user to the document inventory.";
                 return operation;
             });
 
@@ -71,8 +72,8 @@ internal static class UserEndpoints
             .Produces(StatusCodes.Status400BadRequest)
             .WithOpenApi(operation =>
             {
-                operation.Summary = "Update a business user. Replacement of the documents service/user";
-                operation.Description = "Updates the information of an existing business user.";
+                operation.Summary = "Update a user";
+                operation.Description = "Updates the information of an existing  user.";
 
                 return operation;
             });

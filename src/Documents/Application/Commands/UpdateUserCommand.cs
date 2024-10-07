@@ -5,26 +5,22 @@ using MediatR;
 
 namespace Documents.Application.Commands;
 
-internal record UpdateBusinessUserCommand(Guid UserId, string Name) : IRequest<BusinessUser>;
+internal record UpdateBusinessUserCommand(Guid UserId, string Name) : IRequest<User>;
 
 internal class UpdateBusinessUserCommandHandler(
     IDomainEventDispatcher dispatcher,
     IDocumentInventoryRepository repository)
-    : IRequestHandler<UpdateBusinessUserCommand, BusinessUser>
+    : IRequestHandler<UpdateBusinessUserCommand, User>
 {
-    public async Task<BusinessUser> Handle(UpdateBusinessUserCommand command, CancellationToken cancellationToken)
+    public async Task<User> Handle(UpdateBusinessUserCommand command, CancellationToken cancellationToken)
     {
         //Here i'd call user & consumer domain services to verify the users
 
         var documentInventory = await repository.GetDocumentInventory(cancellationToken);
-        var businessUser = new BusinessUser
-        {
-            Id = command.UserId,
-            Name = command.Name
-        };
-        documentInventory.SetBusinessUser(businessUser);
+        
+        var user = documentInventory.UpdateUser(command.UserId, command.Name);
         await dispatcher.DispatchEvents(documentInventory.BusinessEvents, cancellationToken);
 
-        return businessUser;
+        return user;
     }
 }

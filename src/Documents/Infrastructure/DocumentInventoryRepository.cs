@@ -2,6 +2,7 @@ using System.Collections.Concurrent;
 using Documents.Application.Interfaces;
 using Documents.Domain.Aggregates;
 using Documents.Domain.Entities;
+using Documents.Domain.Exceptions;
 using Documents.Domain.ValueObjects;
 using Force.DeepCloner;
 
@@ -10,8 +11,7 @@ namespace Documents.Infrastructure;
 /// This repository implementation is very simplified due to the limitation of the solution to in-memory operations.
 internal class DocumentInventoryRepository : IDocumentInventoryRepository
 {
-    private ConcurrentBag<BusinessUser> Users { get; } = [];
-    private ConcurrentBag<Customer> Customers { get; } = [];
+    private ConcurrentBag<User> Users { get; } = [];
     private ConcurrentBag<Process> Processes { get; } = [];
 
     private ConcurrentBag<DocumentType> AllowedDocumentTypes { get; } =
@@ -28,38 +28,21 @@ internal class DocumentInventoryRepository : IDocumentInventoryRepository
     {
         return Task.FromResult<IDocumentsInventory>(new DocumentsInventory(
             Users.ToArray().DeepClone(),
-            Customers.ToArray().DeepClone(),
             AllowedDocumentTypes.ToArray().DeepClone(),
             Processes.ToArray().DeepClone()));
     }
 
-    public Task AddBusinessUser(BusinessUser user, CancellationToken ct)
+    public Task AddUser(User user, CancellationToken ct)
     {
         Users.Add(user);
 
         return Task.CompletedTask;
     }
 
-    public Task UpdateBusinessUser(BusinessUser user, CancellationToken ct)
+    public Task UpdateBusinessUser(Guid userId, string name, CancellationToken ct)
     {
-        var existingUser = Users.FirstOrDefault(u => u.Id == user.Id);
-        existingUser?.Set(user);
-        return Task.CompletedTask;
-    }
-
-    public Task AddCustomer(Customer customer, CancellationToken ct)
-    {
-        if (Customers.All(c => c.Id != customer.Id))
-            Customers.Add(customer);
-
-        return Task.CompletedTask;
-    }
-
-    public Task AssignCustomer(Customer customer, CancellationToken ct)
-    {
-        var existingCustomer = Customers.FirstOrDefault(c => c.Id == customer.Id);
-        existingCustomer?.ReassignUser(customer);
-
+        var existingUser = Users.FirstOrDefault(u => u.Id == userId);
+        existingUser?.SetName(name);
         return Task.CompletedTask;
     }
 
@@ -78,6 +61,10 @@ internal class DocumentInventoryRepository : IDocumentInventoryRepository
     {
         if (Processes.All(p => p.Id != process.Id))
             Processes.Add(process);
+        var existingProcess = Processes.FirstOrDefault(p => p.Id == process.Id);
+        if (existingProcess is null)
+            throw new ProcessNotFoundException();
+        
         process.SetStatus(process.Status);
 
         return Task.CompletedTask;

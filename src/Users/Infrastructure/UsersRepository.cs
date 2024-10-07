@@ -23,7 +23,8 @@ internal class UsersRepository : IUsersRepository
         Users.Add(new BusinessUser
         {
             Name = user.Name,
-            Id = guid
+            Id = guid,
+            Role = user.Role
         });
 
         return Task.FromResult(guid);
@@ -34,8 +35,9 @@ internal class UsersRepository : IUsersRepository
         var existingUser = Users.FirstOrDefault(u => u.Id == user.Id);
         if (existingUser is null)
             throw new UserDoesNotExistException();
+
+        existingUser.Name = user.Name;
         
-        existingUser.Set(user);
         return Task.CompletedTask;
     }
 }

@@ -4,17 +4,17 @@ using MediatR;
 
 namespace Documents.Application.Queries;
 
-internal record GetCustomersQuery : IRequest<IEnumerable<Customer>>
+internal record GetCustomersQuery : IRequest<IEnumerable<User>>
 {
 }
 
 internal class GetCustomersHandler(IDocumentInventoryRepository repository)
-    : IRequestHandler<GetCustomersQuery, IEnumerable<Customer>>
+    : IRequestHandler<GetCustomersQuery, IEnumerable<User>>
 {
-    public async Task<IEnumerable<Customer>> Handle(GetCustomersQuery request, CancellationToken cancellationToken)
+    public async Task<IEnumerable<User>> Handle(GetCustomersQuery request, CancellationToken cancellationToken)
     {
         var documentInventory = await repository.GetDocumentInventory(cancellationToken);
-        var customers = documentInventory.GetCustomers();
+        var customers = documentInventory.GetUsers();
 
         return customers;
     }

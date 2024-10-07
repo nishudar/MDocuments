@@ -11,18 +11,21 @@ public class Process : Entity, IProcess
     public required Guid BusinessUserId { get; init; }
     public required List<Document> Documents { get; init; }
     public required ICollection<DocumentType> AllowedDocumentTypes { get; init; }
-    public ProcessStatus Status { get; private set; }
+    public string Status { get; private set; }
 
     public bool AllDocumentsProvided()
     {
-        return !AllowedDocumentTypes
+        return AllowedDocumentTypes
             .Where(type => type.IsRequired)
             .All(type => Documents.Exists(
                 document => document.DocumenType == type.TypeName));
     }
 
-    public void SetStatus(ProcessStatus status)
+    public void SetStatus(string status)
     {
+        if (!ProcessStatus.ProcessStatuses.Contains(status))
+            throw new ArgumentException(status);
+        
         if (!AllDocumentsProvided() && status is ProcessStatus.Finished)
             throw new ProcessCannotChangeStatusException("some documents were not provided", Id);
 

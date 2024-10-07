@@ -5,10 +5,10 @@ using Documents.Domain.Events;
 namespace Documents.Application.EventHandlers;
 
 internal class BusinessUserAddedHandler(IDocumentInventoryRepository repository)
-    : IDomainEventHandler<BusinessUserAddedEvent>
+    : IDomainEventHandler<UserAddedEvent>
 {
-    public async Task Handle(BusinessUserAddedEvent user, CancellationToken cancellationToken)
+    public async Task Handle(UserAddedEvent user, CancellationToken cancellationToken)
     {
-        await repository.AddBusinessUser(user.User, cancellationToken);
+        await repository.AddUser(user.User, cancellationToken);
     }
 }

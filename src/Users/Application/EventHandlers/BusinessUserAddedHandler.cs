@@ -15,7 +15,8 @@ internal class BusinessUserAddedHandler(IUsersRepository repository, IMediator m
         await mediator.Publish(new UserCreatedIntegrationEvent()
         {
             UserId = user.User.Id,
-            Name = user.User.Name
+            Name = user.User.Name,
+            Role = user.User.Role
         }, cancellationToken);
     }
 }

@@ -6,16 +6,15 @@ namespace Documents.Domain.Aggregates;
 
 internal interface IDocumentsInventory : IAggregate
 {
-    Process StartProcess(Guid businessUserId, Guid customerId);
+    Process StartProcess(Guid operatorId, Guid customerId);
     void FinishProcess(Guid businessUserId, Guid customerId);
     void AbandonProcess(Guid businessUserId, Guid customerId);
-    void SetBusinessUser(BusinessUser user);
-    void AssignCustomer(Customer customer);
+    public void AddUser(User user);
+    public User UpdateUser(Guid userId, string name);
     void ValidateDocument(Document document);
     void AddDocument(Document document);
     ProcessReport? GetReport(Guid processId);
     Document? GetDocument(Guid documentId);
-    IEnumerable<BusinessUser> GetUsers();
-    IEnumerable<Customer> GetCustomers();
+    IEnumerable<User> GetUsers();
     IEnumerable<Process> GetProcesses();
 }

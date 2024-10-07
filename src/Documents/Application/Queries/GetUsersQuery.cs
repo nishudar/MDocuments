@@ -4,14 +4,14 @@ using MediatR;
 
 namespace Documents.Application.Queries;
 
-internal record GetBusinessUsersQuery : IRequest<IEnumerable<BusinessUser>>
+internal record GetBusinessUsersQuery : IRequest<IEnumerable<User>>
 {
 }
 
 internal class GetBusinessUsersHandler(IDocumentInventoryRepository repository)
-    : IRequestHandler<GetBusinessUsersQuery, IEnumerable<BusinessUser>>
+    : IRequestHandler<GetBusinessUsersQuery, IEnumerable<User>>
 {
-    public async Task<IEnumerable<BusinessUser>> Handle(GetBusinessUsersQuery request,
+    public async Task<IEnumerable<User>> Handle(GetBusinessUsersQuery request,
         CancellationToken cancellationToken)
     {
         var documentInventory = await repository.GetDocumentInventory(cancellationToken);

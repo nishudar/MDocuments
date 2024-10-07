@@ -3,7 +3,7 @@ using Documents.Domain.Entities;
 
 namespace Documents.Domain.Events;
 
-public class CustomerAddedEvent : IDomainEvent
+public class UserAddedEvent : IDomainEvent
 {
-    public required Customer Customer { get; init; }
+    public required User User { get; init; }
 }
