@@ -49,7 +49,7 @@ internal static class UserEndpoints
             .Produces(StatusCodes.Status400BadRequest)
             .WithOpenApi(operation =>
             {
-                operation.Summary = "Add a business user. Replacement of the documents service/user. Was has not been tested yet";
+                operation.Summary = "Add a business user. Replacement of the documents service/user";
                 operation.Description = "Adds a new business user to the document inventory.";
                 return operation;
             });
@@ -71,7 +71,7 @@ internal static class UserEndpoints
             .Produces(StatusCodes.Status400BadRequest)
             .WithOpenApi(operation =>
             {
-                operation.Summary = "Update a business user. Replacement of the documents service/user. Was has not been tested yet";
+                operation.Summary = "Update a business user. Replacement of the documents service/user";
                 operation.Description = "Updates the information of an existing business user.";
 
                 return operation;

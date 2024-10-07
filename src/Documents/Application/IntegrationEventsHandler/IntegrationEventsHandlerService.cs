@@ -1,20 +1,20 @@
-﻿
+﻿using System.Text;
 using System.Text.Json;
 using Common.IntegrationEvents.Events;
+using Confluent.Kafka;
 using Documents.Domain.Entities;
 using Documents.Domain.Events;
 using MediatR;
-using Confluent.Kafka;
-using System.Text;
-namespace Documents.Infrastructure;
 
-internal sealed class KafkaConsumerBackgroundService : BackgroundService
+namespace Documents.Application.IntegrationEventsHandler;
+
+internal sealed class IntegrationEventsHandlerService : BackgroundService
 {
-    private readonly ILogger<KafkaConsumerBackgroundService> _logger;
+    private readonly ILogger<IntegrationEventsHandlerService> _logger;
     private readonly IConsumer<Ignore, string> _consumer;
     private readonly IMediator _mediator;
 
-    public KafkaConsumerBackgroundService(ILogger<KafkaConsumerBackgroundService> logger, IMediator mediator, string kafkaServer)
+    public IntegrationEventsHandlerService(ILogger<IntegrationEventsHandlerService> logger, IMediator mediator, string kafkaServer)
     {
         _logger = logger;
         _mediator = mediator;
@@ -88,7 +88,7 @@ internal sealed class KafkaConsumerBackgroundService : BackgroundService
 
     private static string? GetEventTypeFromHeaders(Headers headers)
     {
-        var header = headers.FirstOrDefault(h => h.Key == "EventType");
+        var header = headers.FirstOrDefault(h => h.Key == "eventType");
         return header != null ? Encoding.UTF8.GetString(header.GetValueBytes()) : null;
     }
 

@@ -1,3 +1,4 @@
+using Documents.Application.IntegrationEventsHandler;
 using Documents.Application.Interfaces;
 using Documents.Infrastructure.Clients.Storage;
 using MediatR;
@@ -15,8 +16,8 @@ internal static class Extension
         services.AddSingleton<IDocumentInventoryRepository, DocumentInventoryRepository>();
         services.AddTransient<IStorageService, StorageService>();
         
-        services.AddHostedService(sp => new KafkaConsumerBackgroundService(
-            sp.GetRequiredService<ILogger<KafkaConsumerBackgroundService>>(),
+        services.AddHostedService(sp => new IntegrationEventsHandlerService(
+            sp.GetRequiredService<ILogger<IntegrationEventsHandlerService>>(),
             sp.GetRequiredService<IMediator>(),
             kafkaServer));
 
