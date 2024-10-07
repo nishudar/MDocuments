@@ -6,7 +6,7 @@ namespace Documents.Api;
 
 internal static class UserEndpoints
 {
-    private const string TagBusinessUsers = "Business Users";
+    private const string TagBusinessUsers = "Users";
 
     public static void MapUserEndpoints(this IEndpointRouteBuilder app, TimeSpan timeout)
     {
