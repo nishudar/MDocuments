@@ -94,7 +94,7 @@ internal sealed class IntegrationEventsHandlerService : BackgroundService
 
     private void HandleUserCreatedEvent(UserCreatedIntegrationEvent userCreatedEvent)
     {
-        _mediator.Send(new BusinessUserAddedEvent
+        _mediator.Publish(new BusinessUserAddedEvent
         {
             User = new BusinessUser
             {
@@ -106,7 +106,7 @@ internal sealed class IntegrationEventsHandlerService : BackgroundService
 
     private void HandleUserUpdatedEvent(UserUpdatedIntegrationEvent userUpdatedEvent)
     {
-        _mediator.Send(new BusinessUserUpdatedEvent
+        _mediator.Publish(new BusinessUserUpdatedEvent
         {
             User = new BusinessUser
             {
