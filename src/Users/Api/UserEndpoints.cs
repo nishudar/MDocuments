@@ -10,7 +10,7 @@ namespace Users.Api;
 
 internal static class UserEndpoints
 {
-    private const string TagBusinessUsers = "Business Users";
+    private const string TagUsers = "Users";
 
     public static void MapUserEndpoints(this IEndpointRouteBuilder app, TimeSpan timeout)
     {
@@ -24,13 +24,13 @@ internal static class UserEndpoints
             })
             .DisableAntiforgery()
             .WithName("getUsers")
-            .WithTags(TagBusinessUsers)
+            .WithTags(TagUsers)
             .Produces<IEnumerable<BusinessUser>>()
             .Produces(StatusCodes.Status400BadRequest)
             .WithOpenApi(operation =>
             {
-                operation.Summary = "Get business users";
-                operation.Description = $"Get list of business users";
+                operation.Summary = "Get users";
+                operation.Description = $"Get list of users";
                 return operation;
             });
 
@@ -45,7 +45,7 @@ internal static class UserEndpoints
             })
             .DisableAntiforgery()
             .WithName("addUser")
-            .WithTags(TagBusinessUsers)
+            .WithTags(TagUsers)
             .Produces<IdResponse>()
             .Produces(StatusCodes.Status400BadRequest)
             .WithOpenApi(operation =>
@@ -67,7 +67,7 @@ internal static class UserEndpoints
             })
             .DisableAntiforgery()
             .WithName("updateUser")
-            .WithTags(TagBusinessUsers)
+            .WithTags(TagUsers)
             .Produces(StatusCodes.Status204NoContent)
             .Produces(StatusCodes.Status400BadRequest)
             .WithOpenApi(operation =>
