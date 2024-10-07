@@ -8,7 +8,7 @@ internal interface IDocumentsInventory : IAggregate
 {
     Process StartProcess(Guid operatorId, Guid customerId);
     void FinishProcess(Guid businessUserId, Guid customerId);
-    void AbandonProcess(Guid businessUserId, Guid customerId);
+    void AbandonProcess(Guid operatorId, Guid customerId);
     public void AddUser(User user);
     public User UpdateUser(Guid userId, string name);
     void ValidateDocument(Document document);

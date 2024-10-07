@@ -85,22 +85,24 @@ internal class DocumentsInventory(
         AddBusinessEvent(new ProcessChangedStatusEvent {Process = existingProcess});
     }
 
-    public void AbandonProcess(Guid businessUserId, Guid customerId)
+    public void AbandonProcess(Guid operatorId, Guid customerId)
     {
-        var user = Users.Find(u => u.Id == businessUserId);
+        var user = Users.Find(u => u.Id == operatorId);
         var customer = Users.Find(u => u.Id == customerId);
-        var process = Processes.Find(process =>
-            process.BusinessUserId == businessUserId && process.CustomerId == customerId);
-
         if (user is null)
-            throw new UserDoesNotExistException(businessUserId);
+            throw new UserDoesNotExistException(operatorId);
         if (customer is null)
             throw new CustomerDoesNotExistException(customerId);
-        if (process is null)
-            throw new ProcessCannotChangeStatusException("not started");
-        if (process.Status is ProcessStatus.Finished)
-            throw new ProcessCannotChangeStatusException("already finished", process.Id);
+        
+        var process = Processes.Find(process =>
+            process.BusinessUserId == operatorId 
+            && process.CustomerId == customerId
+            && process.Status == ProcessStatus.Started);
 
+        if (process is null)
+            throw new ProcessNotFoundException(customerId, user.Id);
+
+        
         process.SetStatus(ProcessStatus.Abandoned);
         AddBusinessEvent(new ProcessChangedStatusEvent {Process = process});
     }
