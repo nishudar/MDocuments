@@ -15,7 +15,7 @@ public class RequestLoggingBehavior<TRequest, TResponse>(ILogger<RequestLoggingB
         else if (request.GetType().Name.EndsWith("Command"))
             requestTypeString = "command";
         else
-            requestTypeString = "request"
+            requestTypeString = "request";
 
         logger.LogDebug("{Assembly} service Handling {RequestTypeString}: {RequestName} {@Request}",
             request.GetType().Assembly.GetName().Name, requestTypeString, typeof(TRequest).Name, request);
