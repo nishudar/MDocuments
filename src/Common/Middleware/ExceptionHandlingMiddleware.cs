@@ -17,7 +17,7 @@ public class ExceptionHandlingMiddleware(RequestDelegate next)
         {
             var problemDetails = new ProblemDetails
             {
-                Title = "Business error",
+                Title = "Business rule validation",
                 Detail = ex.Message,
                 Status = StatusCodes.Status400BadRequest,
                 Instance = context.Request.Path
