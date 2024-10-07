@@ -40,5 +40,6 @@ var operationTimeout = new TimeSpan(0, 0, 1, 0);
 
 app.MapProcessEndpoints(operationTimeout);
 app.MapDocumentsEndpoints(operationTimeout);
+app.MapUserEndpoints(operationTimeout);
 
 await app.RunAsync();
