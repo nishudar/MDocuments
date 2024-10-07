@@ -34,4 +34,4 @@ app.UseHttpsRedirection();
 var operationTimeout = new TimeSpan(0, 0, 1, 0);
 app.MapFileEndpoints(operationTimeout);
 
-app.Run();
+await app.RunAsync();

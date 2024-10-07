@@ -43,4 +43,4 @@ app.MapConsumerEndpoints(operationTimeout);
 app.MapProcessEndpoints(operationTimeout);
 app.MapDocumentsEndpoints(operationTimeout);
 
-app.Run();
+await app.RunAsync();

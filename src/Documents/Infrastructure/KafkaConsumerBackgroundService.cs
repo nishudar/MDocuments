@@ -32,9 +32,10 @@ internal sealed class KafkaConsumerBackgroundService : BackgroundService
     protected override Task ExecuteAsync(CancellationToken stoppingToken)
     {
         _consumer.Subscribe(IntegrationTopics.UsersTopic);
-
         return Task.Run(() =>
         {
+            //workaround to aviod logging error on startup(topic not created yet)
+            Task.Delay(3000, stoppingToken);
             while (!stoppingToken.IsCancellationRequested)
             {
                 try
