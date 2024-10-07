@@ -6,7 +6,7 @@ using Users.Domain.DomainEvents;
 
 namespace Users.Application.EventHandlers;
 
-public class BusinessUserAddedHandler(IUsersRepository repository, IMediator mediator)
+internal class BusinessUserAddedHandler(IUsersRepository repository, IMediator mediator)
     : IDomainEventHandler<BusinessUserAddedEvent>
 {
     public async Task Handle(BusinessUserAddedEvent user, CancellationToken cancellationToken)

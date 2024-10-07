@@ -5,9 +5,9 @@ using MediatR;
 
 namespace Documents.Application.Commands;
 
-public record StartProcessCommand(Guid UserId, Guid CustomerId) : IRequest<ProcessReport>;
+internal record StartProcessCommand(Guid UserId, Guid CustomerId) : IRequest<ProcessReport>;
 
-public class StartProcessCommandHandler(IDomainEventDispatcher dispatcher, IDocumentInventoryRepository repository)
+internal class StartProcessCommandHandler(IDomainEventDispatcher dispatcher, IDocumentInventoryRepository repository)
     : IRequestHandler<StartProcessCommand, ProcessReport>
 {
     public async Task<ProcessReport> Handle(StartProcessCommand command, CancellationToken cancellationToken)

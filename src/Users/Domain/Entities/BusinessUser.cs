@@ -3,7 +3,7 @@ using Common.Abstracts;
 
 namespace Users.Domain.Entities;
 
-public class BusinessUser : Entity
+internal class BusinessUser : Entity
 {
     [Required] public required string Name { get; set; }
 

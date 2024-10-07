@@ -3,7 +3,7 @@ using Users.Domain.Entities;
 
 namespace Users.Domain.DomainEvents;
 
-public class BusinessUserAddedEvent : IDomainEvent
+internal class BusinessUserAddedEvent : IDomainEvent
 {
     public required BusinessUser User { get; init; }
 }

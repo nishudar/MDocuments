@@ -4,9 +4,9 @@ using MediatR;
 
 namespace Documents.Application.Commands;
 
-public record AbandonProcessCommand(Guid UserId, Guid CustomerId) : IRequest<Unit>;
+internal record AbandonProcessCommand(Guid UserId, Guid CustomerId) : IRequest<Unit>;
 
-public class AbandonProcessCommandHandler(IDomainEventDispatcher dispatcher, IDocumentInventoryRepository repository)
+internal class AbandonProcessCommandHandler(IDomainEventDispatcher dispatcher, IDocumentInventoryRepository repository)
     : IRequestHandler<AbandonProcessCommand, Unit>
 {
     public async Task<Unit> Handle(AbandonProcessCommand command, CancellationToken cancellationToken)

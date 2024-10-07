@@ -4,9 +4,9 @@ using Users.Domain.Entities;
 
 namespace Users.Application.Queries;
 
-public record GetBusinessUsersQuery : IRequest<IEnumerable<BusinessUser>> { }
+internal record GetBusinessUsersQuery : IRequest<IEnumerable<BusinessUser>> { }
 
-public class GetBusinessUsersHandler(IUsersRepository repository)
+internal class GetBusinessUsersHandler(IUsersRepository repository)
     : IRequestHandler<GetBusinessUsersQuery, IEnumerable<BusinessUser>>
 {
     public async Task<IEnumerable<BusinessUser>> Handle(GetBusinessUsersQuery request,

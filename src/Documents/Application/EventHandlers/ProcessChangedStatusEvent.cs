@@ -6,7 +6,7 @@ using MediatR;
 
 namespace Documents.Application.EventHandlers;
 
-public class ProcessChangedStatusEventHandler(
+internal class ProcessChangedStatusEventHandler(
     IDocumentInventoryRepository repository,
     IMediator mediator)
     : IDomainEventHandler<ProcessChangedStatusEvent>

@@ -1,3 +1,3 @@
 namespace Documents.Api.Models;
 
-public record ReassignCustomerRequest(string Name);
+internal record ReassignCustomerRequest(string Name);

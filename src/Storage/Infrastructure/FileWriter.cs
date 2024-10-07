@@ -3,7 +3,7 @@ using Storage.Domain;
 
 namespace Storage.Infrastructure;
 
-public class FileWriter : IFileWriter
+internal class FileWriter : IFileWriter
 {
     private readonly string _storageDirectory;
 

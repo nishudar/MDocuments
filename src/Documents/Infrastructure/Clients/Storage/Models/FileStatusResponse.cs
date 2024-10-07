@@ -1,6 +1,6 @@
 namespace Documents.Infrastructure.Clients.Storage.Models;
 
-public class FileStatusResponse
+internal class FileStatusResponse
 {
     public required string Status { get; set; }
 }

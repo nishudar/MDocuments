@@ -1,6 +1,6 @@
 namespace NotificationHub.Notifications;
 
-public static class Extension
+internal static class Extension
 {
     public static void AddNotificatioNHub(this IServiceCollection services)
     {

@@ -2,7 +2,7 @@ using Refit;
 
 namespace Documents.Infrastructure.Clients.Storage.Models;
 
-public class UploadFileModel
+internal class UploadFileModel
 {
     [AliasAs("fileName")]
     public required string FileName { get; set; }

@@ -2,7 +2,7 @@ using System.Text.RegularExpressions;
 
 namespace Storage.Domain;
 
-public partial record FileMetadata
+internal partial record FileMetadata
 {
     public Guid Id { get; private init; }
     public required string Name { get; init; }

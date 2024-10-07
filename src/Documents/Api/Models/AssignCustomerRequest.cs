@@ -1,3 +1,3 @@
 namespace Documents.Api.Models;
 
-public record AssignCustomerRequest(string Name);
+internal record AssignCustomerRequest(string Name);

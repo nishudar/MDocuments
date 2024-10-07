@@ -1,40 +1,28 @@
-﻿//TODO: Finish consumption of the event on kafka to synchronize users between services
-
-/*
+﻿
 using System.Text.Json;
 using Common.IntegrationEvents.Events;
-using Documents.Application.Commands;
 using Documents.Domain.Entities;
 using Documents.Domain.Events;
 using MediatR;
-
+using Confluent.Kafka;
+using System.Text;
 namespace Documents.Infrastructure;
 
-using Confluent.Kafka;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-
-public class KafkaConsumerBackgroundService : BackgroundService
+internal sealed class KafkaConsumerBackgroundService : BackgroundService
 {
     private readonly ILogger<KafkaConsumerBackgroundService> _logger;
     private readonly IConsumer<Ignore, string> _consumer;
     private readonly IMediator _mediator;
-    private readonly string _kafkaServer;
-    
+
     public KafkaConsumerBackgroundService(ILogger<KafkaConsumerBackgroundService> logger, IMediator mediator, string kafkaServer)
     {
         _logger = logger;
-        _kafkaServer = kafkaServer;
         _mediator = mediator;
 
         var config = new ConsumerConfig
         {
             GroupId = "user-events-group",
-            BootstrapServers = _kafkaServer,
+            BootstrapServers = kafkaServer,
             AutoOffsetReset = AutoOffsetReset.Earliest
         };
 
@@ -52,14 +40,12 @@ public class KafkaConsumerBackgroundService : BackgroundService
                 try
                 {
                     var consumeResult = _consumer.Consume(stoppingToken);
-                    if (consumeResult != null)
-                    {
+                    if (consumeResult is not null)
                         HandleMessage(consumeResult);
-                    }
                 }
                 catch (ConsumeException ex)
                 {
-                    _logger.LogError("Error consuming message: {ErrorReason}", ex.Error);
+                    _logger.LogError(ex, "Error consuming message: {ErrorReason}", ex?.Error);
                 }
             }
         }, stoppingToken);
@@ -71,22 +57,21 @@ public class KafkaConsumerBackgroundService : BackgroundService
         {
             var eventType = GetEventTypeFromHeaders(consumeResult.Message.Headers);
 
-            if (eventType == null)
+            if (eventType is null)
             {
-                _logger.LogWarning("EventType header not found.");
+                _logger.LogWarning("EventType header not found");
                 return;
             }
-
             switch (eventType)
             {
                 case nameof(UserCreatedIntegrationEvent):
                     var userCreatedEvent = JsonSerializer.Deserialize<UserCreatedIntegrationEvent>(consumeResult.Message.Value);
-                    HandleUserCreatedEvent(userCreatedEvent);
+                    HandleUserCreatedEvent(userCreatedEvent!);
                     break;
 
                 case nameof(UserUpdatedIntegrationEvent):
                     var userUpdatedEvent = JsonSerializer.Deserialize<UserUpdatedIntegrationEvent>(consumeResult.Message.Value);
-                    HandleUserUpdatedEvent(userUpdatedEvent);
+                    HandleUserUpdatedEvent(userUpdatedEvent!);
                     break;
 
                 default:
@@ -96,26 +81,21 @@ public class KafkaConsumerBackgroundService : BackgroundService
         }
         catch (Exception ex)
         {
-            _logger.LogError($"Error processing message: {ex.Message}");
+            _logger.LogError(ex, "Error processing message: {ExMessage}", ex.Message);
         }
     }
 
-    private string? GetEventTypeFromHeaders(Headers headers)
+    private static string? GetEventTypeFromHeaders(Headers headers)
     {
-        var header = headers?.FirstOrDefault(h => h.Key == "EventType");
-        if (header != null)
-        {
-            return Encoding.UTF8.GetString(header.GetValueBytes());
-        }
-
-        return null;
+        var header = headers.FirstOrDefault(h => h.Key == "EventType");
+        return header != null ? Encoding.UTF8.GetString(header.GetValueBytes()) : null;
     }
 
     private void HandleUserCreatedEvent(UserCreatedIntegrationEvent userCreatedEvent)
     {
         _mediator.Send(new BusinessUserAddedEvent
         {
-            new BusinessUser()
+            User = new BusinessUser
             {
                 Name = userCreatedEvent.Name,
                 Id = userCreatedEvent.UserId
@@ -125,7 +105,14 @@ public class KafkaConsumerBackgroundService : BackgroundService
 
     private void HandleUserUpdatedEvent(UserUpdatedIntegrationEvent userUpdatedEvent)
     {
-        _logger.LogInformation($"User updated: {userUpdatedEvent.UserId}, Name: {userUpdatedEvent.Name}");
+        _mediator.Send(new BusinessUserUpdatedEvent
+        {
+            User = new BusinessUser
+            {
+                Name = userUpdatedEvent.Name,
+                Id = userUpdatedEvent.UserId
+            }
+        });
     }
 
     public override void Dispose()
@@ -135,5 +122,3 @@ public class KafkaConsumerBackgroundService : BackgroundService
         base.Dispose();
     }
 }
-
-*/

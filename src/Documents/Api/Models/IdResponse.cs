@@ -1,3 +1,3 @@
 namespace Documents.Api.Models;
 
-public record IdResponse(Guid Id);
+internal record IdResponse(Guid Id);

@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Documents.Api;
 
-public static class DocumentEndpoints
+internal static class DocumentEndpoints
 {
     private const string TagDocuments = "Documents";
 

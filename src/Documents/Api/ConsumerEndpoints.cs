@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Documents.Api;
 
-public static class CustomersEndpoints
+internal static class CustomersEndpoints
 {
     private const string TagCustomers = "Customers";
 

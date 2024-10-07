@@ -1,6 +1,6 @@
 namespace Storage.Domain;
 
-public enum FileStatus
+internal enum FileStatus
 {
     Uploading,
     Completed,

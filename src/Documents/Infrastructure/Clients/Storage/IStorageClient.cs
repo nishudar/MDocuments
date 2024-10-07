@@ -3,7 +3,7 @@ using Refit;
 
 namespace Documents.Infrastructure.Clients.Storage;
 
-public interface IStorageClient
+internal interface IStorageClient
 {
     [Multipart]
     [Post("/v1/file/upload")]

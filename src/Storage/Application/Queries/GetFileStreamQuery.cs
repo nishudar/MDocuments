@@ -4,9 +4,9 @@ using Storage.Domain;
 
 namespace Storage.Application.Queries;
 
-public record GetFileStreamQuery(Guid FileId) : IRequest<IFileReader.FileStreamResult?>;
+internal record GetFileStreamQuery(Guid FileId) : IRequest<IFileReader.FileStreamResult?>;
 
-public class GetFileByIdHandler(IFileReader fileReader, IFileMetadataRepository fileMetadata)
+internal class GetFileByIdHandler(IFileReader fileReader, IFileMetadataRepository fileMetadata)
     : IRequestHandler<GetFileStreamQuery, IFileReader.FileStreamResult?>
 {
     public async Task<IFileReader.FileStreamResult?> Handle(GetFileStreamQuery request,

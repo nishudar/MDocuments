@@ -3,7 +3,7 @@ using Users.Domain.Entities;
 
 namespace Users.Application.Interfaces;
 
-public interface IUsersRepository
+internal interface IUsersRepository
 {
     Task<IUsersInventory> GetUsersInventory(CancellationToken cancellationToken);
     Task<Guid> AddBusinessUser(BusinessUser user, CancellationToken ct);

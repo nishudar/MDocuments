@@ -2,7 +2,7 @@
 
 namespace Users.Infrastructure;
 
-public static class Extension
+internal static class Extension
 {
     public static void AddInfrastructure(this IServiceCollection services)
     {

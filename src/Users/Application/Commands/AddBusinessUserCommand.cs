@@ -5,9 +5,9 @@ using Users.Domain.Entities;
 
 namespace Users.Application.Commands;
 
-public record AddBusinessUserCommand(string Name) : IRequest<BusinessUser>;
+internal record AddBusinessUserCommand(string Name) : IRequest<BusinessUser>;
 
-public class AddBusinessUserCommandHandler(IDomainEventDispatcher dispatcher, IUsersRepository repository)
+internal class AddBusinessUserCommandHandler(IDomainEventDispatcher dispatcher, IUsersRepository repository)
     : IRequestHandler<AddBusinessUserCommand, BusinessUser>
 {
     public async Task<BusinessUser> Handle(AddBusinessUserCommand command, CancellationToken cancellationToken)

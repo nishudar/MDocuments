@@ -8,7 +8,7 @@ using Force.DeepCloner;
 namespace Documents.Infrastructure;
 
 /// This repository implementation is very simplified due to the limitation of the solution to in-memory operations.
-public class DocumentInventoryRepository : IDocumentInventoryRepository
+internal class DocumentInventoryRepository : IDocumentInventoryRepository
 {
     private ConcurrentBag<BusinessUser> Users { get; } = [];
     private ConcurrentBag<Customer> Customers { get; } = [];

@@ -6,9 +6,9 @@ using MediatR;
 
 namespace Documents.Application.Commands;
 
-public record UploadDocumentCommand(DocumentUploadModel UploadedModel) : IRequest<Guid>;
+internal record UploadDocumentCommand(DocumentUploadModel UploadedModel) : IRequest<Guid>;
 
-public class UploadDocumentHnandler(
+internal class UploadDocumentHnandler(
     IDomainEventDispatcher dispatcher,
     IDocumentInventoryRepository repository,
     IStorageService storageService)

@@ -2,7 +2,7 @@ using Storage.Domain;
 
 namespace Storage.Application.Interfaces;
 
-public interface IFileReader
+internal interface IFileReader
 {
     FileStreamResult? GetFile(FileMetadata fileMetadata);
 

@@ -7,10 +7,12 @@ using Storage.Domain;
 
 namespace Storage.Api;
 
-public static class FileEndpoints
+internal static class FileEndpoints
 {
     public static void MapFileEndpoints(this IEndpointRouteBuilder app, TimeSpan operationTimeout)
     {
+        const string FileEndpointName = "File";
+        
         app.MapPost("/v1/file/upload", async (
                 HttpContext context,
                 IMediator mediator,
@@ -25,7 +27,7 @@ public static class FileEndpoints
             .DisableAntiforgery()
             .WithMetadata(new IgnoreAntiforgeryTokenAttribute())
             .WithName("uploadFile")
-            .WithTags("Files")
+            .WithTags(FileEndpointName)
             .Produces(StatusCodes.Status200OK)
             .Produces(StatusCodes.Status400BadRequest)
             .WithOpenApi(operation =>
@@ -45,7 +47,7 @@ public static class FileEndpoints
                     : Results.NotFound();
             })
             .WithName("downloadFile")
-            .WithTags("Files")
+            .WithTags(FileEndpointName)
             .Produces<FileContentResult>()
             .Produces(StatusCodes.Status404NotFound)
             .WithOpenApi(operation =>
@@ -65,7 +67,7 @@ public static class FileEndpoints
                 return Results.Ok(files);
             })
             .WithName("getMetadata")
-            .WithTags("Files")
+            .WithTags(FileEndpointName)
             .Produces<IEnumerable<FileMetadata>>()
             .WithOpenApi(operation =>
             {

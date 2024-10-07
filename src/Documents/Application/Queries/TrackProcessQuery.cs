@@ -6,9 +6,9 @@ using MediatR;
 
 namespace Documents.Application.Queries;
 
-public record TrackProcessQuery(Guid ProcessId) : IRequest<ProcessReport>;
+internal record TrackProcessQuery(Guid ProcessId) : IRequest<ProcessReport>;
 
-public class TrackProcessHandler(IDomainEventDispatcher dispatcher, IDocumentInventoryRepository repository)
+internal class TrackProcessHandler(IDomainEventDispatcher dispatcher, IDocumentInventoryRepository repository)
     : IRequestHandler<TrackProcessQuery, ProcessReport>
 {
     public async Task<ProcessReport> Handle(TrackProcessQuery request, CancellationToken cancellationToken)

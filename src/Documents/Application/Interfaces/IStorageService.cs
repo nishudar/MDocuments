@@ -2,7 +2,7 @@ using Documents.Infrastructure.Clients.Storage.Models;
 
 namespace Documents.Application.Interfaces;
 
-public interface IStorageService
+internal interface IStorageService
 {
     Task<FileDownloadResponse?> DownloadFileAsync(Guid fileId, CancellationToken ct = default);
 

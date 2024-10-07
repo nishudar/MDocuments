@@ -8,7 +8,7 @@ using Force.DeepCloner;
 
 namespace Documents.Domain.Aggregates;
 
-public class DocumentsInventory(
+internal class DocumentsInventory(
     ICollection<BusinessUser> users,
     ICollection<Customer> customers,
     ICollection<DocumentType> documentTypes,

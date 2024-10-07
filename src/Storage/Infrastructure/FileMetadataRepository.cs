@@ -3,7 +3,7 @@ using Storage.Domain;
 
 namespace Storage.Infrastructure;
 
-public class FileMetadataRepository : IFileMetadataRepository
+internal class FileMetadataRepository : IFileMetadataRepository
 {
     private readonly Dictionary<Guid, FileMetadata> _files = new();
 

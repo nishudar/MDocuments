@@ -3,7 +3,7 @@ using Storage.Application.Interfaces;
 
 namespace Storage.Infrastructure;
 
-public static class Extension
+internal static class Extension
 {
     public static void AddInfrastructure(this IServiceCollection serviceCollection, string storageDirecotry)
     {

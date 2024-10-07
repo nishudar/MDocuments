@@ -6,17 +6,17 @@ using Documents.Infrastructure.Clients.Storage.Models.Exceptions;
 
 namespace Documents.Infrastructure;
 
-public class StorageService(IStorageClient fileServiceClient) : IStorageService
+internal class StorageService(IStorageClient fileServiceClient) : IStorageService
 {
-    public async Task<FileDownloadResponse?> DownloadFileAsync(Guid fileId, CancellationToken cancellationToken = default)
+    public async Task<FileDownloadResponse?> DownloadFileAsync(Guid fileId, CancellationToken ct = default)
     {
-        var response = await fileServiceClient.DownloadFile(fileId, cancellationToken);
+        var response = await fileServiceClient.DownloadFile(fileId, ct);
         if (response.StatusCode == HttpStatusCode.NotFound)
             return null;
 
         if (response.IsSuccessStatusCode)
         {
-            var fileStream = await response.Content.ReadAsStreamAsync(cancellationToken);
+            var fileStream = await response.Content.ReadAsStreamAsync(ct);
             var contentType = response.Content.Headers.ContentType?.ToString() ?? "application/octet-stream";
             var fileName = response.Content.Headers.ContentDisposition?.FileName?.Trim('"') ?? "downloadedFile";
             return new FileDownloadResponse
@@ -31,7 +31,7 @@ public class StorageService(IStorageClient fileServiceClient) : IStorageService
     }
 
     public async Task<UploadFileResponse> UploadFile(Stream fileStream, string fileName, string fileType, Guid userId,
-        CancellationToken cancellationToken = default)
+        CancellationToken ct = default)
     {
         var fileContent = new StreamContent(fileStream);
         var multipartContent = new MultipartFormDataContent
@@ -56,7 +56,7 @@ public class StorageService(IStorageClient fileServiceClient) : IStorageService
         throw new FileServiceException("Failed to retrieve file metadata.");
     }
 
-    public async Task<FileStatusResponse> GetFileStatus(Guid trackingId, CancellationToken ct)
+    public async Task<FileStatusResponse> GetFileStatus(Guid trackingId, CancellationToken ct = default)
     {
         var response = await fileServiceClient.GetFileStatus(trackingId, ct);
         if (response.IsSuccessStatusCode)

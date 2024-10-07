@@ -5,7 +5,7 @@ using Users.Domain.Entities;
 
 namespace Users.Domain.Aggregates;
 
-public class UsersInventory(ICollection<BusinessUser> users)
+internal class UsersInventory(ICollection<BusinessUser> users)
     : Aggregate, IUsersInventory
 {
     private List<BusinessUser> Users { get; } = users.ToList();

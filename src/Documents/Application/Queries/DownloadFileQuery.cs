@@ -5,9 +5,9 @@ using MediatR;
 
 namespace Documents.Application.Queries;
 
-public record DownloadFileQuery(Guid DocumentId) : IRequest<FileDownloadResponse>;
+internal record DownloadFileQuery(Guid DocumentId) : IRequest<FileDownloadResponse>;
 
-public class DownloadFileHandler(IDocumentInventoryRepository repository, IStorageService storageService)
+internal class DownloadFileHandler(IDocumentInventoryRepository repository, IStorageService storageService)
     : IRequestHandler<DownloadFileQuery, FileDownloadResponse>
 {
     public async Task<FileDownloadResponse> Handle(DownloadFileQuery request, CancellationToken cancellationToken)

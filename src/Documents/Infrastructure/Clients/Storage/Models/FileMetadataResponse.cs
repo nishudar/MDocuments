@@ -1,6 +1,6 @@
 namespace Documents.Infrastructure.Clients.Storage.Models;
 
-public class FileMetadataResponse
+internal class FileMetadataResponse
 {
     public required string FileName { get; set; }
     public required string FileType { get; set; }

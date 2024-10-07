@@ -4,7 +4,7 @@ using Documents.Domain.ValueObjects;
 
 namespace Documents.Domain.Aggregates;
 
-public interface IDocumentsInventory : IAggregate
+internal interface IDocumentsInventory : IAggregate
 {
     Process StartProcess(Guid businessUserId, Guid customerId);
     void FinishProcess(Guid businessUserId, Guid customerId);

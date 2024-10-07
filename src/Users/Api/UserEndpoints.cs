@@ -7,7 +7,7 @@ using Users.Domain.Entities;
 
 namespace Users.Api;
 
-public static class UserEndpoints
+internal static class UserEndpoints
 {
     private const string TagBusinessUsers = "Business Users";
 

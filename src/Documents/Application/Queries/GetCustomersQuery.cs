@@ -4,11 +4,11 @@ using MediatR;
 
 namespace Documents.Application.Queries;
 
-public record GetCustomersQuery : IRequest<IEnumerable<Customer>>
+internal record GetCustomersQuery : IRequest<IEnumerable<Customer>>
 {
 }
 
-public class GetCustomersHandler(IDocumentInventoryRepository repository)
+internal class GetCustomersHandler(IDocumentInventoryRepository repository)
     : IRequestHandler<GetCustomersQuery, IEnumerable<Customer>>
 {
     public async Task<IEnumerable<Customer>> Handle(GetCustomersQuery request, CancellationToken cancellationToken)

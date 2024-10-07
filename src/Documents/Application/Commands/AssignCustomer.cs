@@ -5,9 +5,9 @@ using MediatR;
 
 namespace Documents.Application.Commands;
 
-public record AssignCustomerCommand(string Name, Guid UserId) : IRequest<Customer>;
+internal record AssignCustomerCommand(string Name, Guid UserId) : IRequest<Customer>;
 
-public class AssignCustomerCommandHandler(IDomainEventDispatcher dispatcher, IDocumentInventoryRepository repository)
+internal class AssignCustomerCommandHandler(IDomainEventDispatcher dispatcher, IDocumentInventoryRepository repository)
     : IRequestHandler<AssignCustomerCommand, Customer>
 {
     public async Task<Customer> Handle(AssignCustomerCommand command, CancellationToken cancellationToken)

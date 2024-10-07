@@ -7,7 +7,7 @@ using Users.Domain.Exceptions;
 
 namespace Users.Infrastructure;
 
-public class UsersRepository : IUsersRepository
+internal class UsersRepository : IUsersRepository
 {
     private ConcurrentBag<BusinessUser> Users { get; } = [];
     

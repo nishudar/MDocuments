@@ -6,7 +6,7 @@ using MediatR;
 
 namespace Documents.Api;
 
-public static class ProcessEndpoints
+internal static class ProcessEndpoints
 {
     private const string TagProcesses = "Processes";
 

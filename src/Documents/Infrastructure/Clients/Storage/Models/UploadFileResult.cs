@@ -1,6 +1,6 @@
 namespace Documents.Infrastructure.Clients.Storage.Models;
 
-public class UploadFileResponse
+internal class UploadFileResponse
 {
     public Guid FileId { get; init; }
 }

@@ -1,6 +1,6 @@
 namespace NotificationHub.Consumer;
 
-public class KafkaConsumerConfiguration
+internal class KafkaConsumerConfiguration
 {
     public string? Group { get; set; }
     public string? Server { get; set; }

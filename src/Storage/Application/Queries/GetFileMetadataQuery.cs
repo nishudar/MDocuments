@@ -4,9 +4,9 @@ using Storage.Domain;
 
 namespace Storage.Application.Queries;
 
-public record GetFileMetadataQuery(Guid FileId) : IRequest<FileMetadata?>;
+internal record GetFileMetadataQuery(Guid FileId) : IRequest<FileMetadata?>;
 
-public class GetFileMetadataHandler(IFileMetadataRepository fileMetadata)
+internal class GetFileMetadataHandler(IFileMetadataRepository fileMetadata)
     : IRequestHandler<GetFileMetadataQuery, FileMetadata?>
 {
     public Task<FileMetadata?> Handle(GetFileMetadataQuery request, CancellationToken cancellationToken)

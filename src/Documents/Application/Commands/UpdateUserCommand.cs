@@ -5,9 +5,9 @@ using MediatR;
 
 namespace Documents.Application.Commands;
 
-public record UpdateBusinessUserCommand(Guid UserId, string Name) : IRequest<BusinessUser>;
+internal record UpdateBusinessUserCommand(Guid UserId, string Name) : IRequest<BusinessUser>;
 
-public class UpdateBusinessUserCommandHandler(
+internal class UpdateBusinessUserCommandHandler(
     IDomainEventDispatcher dispatcher,
     IDocumentInventoryRepository repository)
     : IRequestHandler<UpdateBusinessUserCommand, BusinessUser>

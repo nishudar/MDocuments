@@ -5,9 +5,9 @@ using MediatR;
 
 namespace Documents.Application.Commands;
 
-public record AddBusinessUserCommand(string Name) : IRequest<BusinessUser>;
+internal record AddBusinessUserCommand(string Name) : IRequest<BusinessUser>;
 
-public class AddBusinessUserCommandHandler(IDomainEventDispatcher dispatcher, IDocumentInventoryRepository repository)
+internal class AddBusinessUserCommandHandler(IDomainEventDispatcher dispatcher, IDocumentInventoryRepository repository)
     : IRequestHandler<AddBusinessUserCommand, BusinessUser>
 {
     public async Task<BusinessUser> Handle(AddBusinessUserCommand command, CancellationToken cancellationToken)

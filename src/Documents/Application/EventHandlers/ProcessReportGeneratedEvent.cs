@@ -3,7 +3,7 @@ using Documents.Domain.Events;
 
 namespace Documents.Application.EventHandlers;
 
-public class ProcessReportGeneratedEventHandler(ILogger<ProcessReportGeneratedEventHandler> logger)
+internal class ProcessReportGeneratedEventHandler(ILogger<ProcessReportGeneratedEventHandler> logger)
     : IDomainEventHandler<ProcessReportGeneratedEvent>
 {
     public Task Handle(ProcessReportGeneratedEvent domainEvent, CancellationToken cancellationToken)

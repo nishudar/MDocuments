@@ -4,9 +4,9 @@ using Storage.Domain;
 
 namespace Storage.Application.Queries;
 
-public record GetFilesMetadataQuery(Guid? UserId) : IRequest<IEnumerable<FileMetadata>>;
+internal record GetFilesMetadataQuery(Guid? UserId) : IRequest<IEnumerable<FileMetadata>>;
 
-public class GetAllFilesHandler(IFileMetadataRepository fileMetadataRepository)
+internal class GetAllFilesHandler(IFileMetadataRepository fileMetadataRepository)
     : IRequestHandler<GetFilesMetadataQuery, IEnumerable<FileMetadata>>
 {
     public async Task<IEnumerable<FileMetadata>> Handle(GetFilesMetadataQuery request,

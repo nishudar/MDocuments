@@ -1,3 +1,3 @@
 ﻿namespace Documents.Api.Models;
 
-public record PatchUserRequest(string Name);
+internal record PatchUserRequest(string Name);

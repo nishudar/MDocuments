@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Documents.Api.Models;
 
-public record DocumentUploadModel
+internal record DocumentUploadModel
 {
     [Required] public required string FileName { get; init; }
 

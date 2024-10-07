@@ -6,7 +6,7 @@ using Microsoft.Extensions.Options;
 
 namespace NotificationHub.Consumer;
 
-public class KafkaConsumerService(
+internal class KafkaConsumerService(
     IHubContext<Notifications.NotificationHub> hubContext,
     ILogger<KafkaConsumerService> logger,
     IOptions<KafkaConsumerConfiguration> options)

@@ -6,7 +6,7 @@ using MediatR;
 
 namespace Documents.Application.EventHandlers;
 
-public class DocumentAddedEventHandler(IDocumentInventoryRepository repository, IMediator mediator)
+internal class DocumentAddedEventHandler(IDocumentInventoryRepository repository, IMediator mediator)
     : IDomainEventHandler<DocumentAddedEvent>
 {
     public async Task Handle(DocumentAddedEvent domainEvent, CancellationToken cancellationToken)

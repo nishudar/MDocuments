@@ -3,7 +3,7 @@ using Documents.Domain.Entities;
 
 namespace Documents.Application.Interfaces;
 
-public interface IDocumentInventoryRepository
+internal interface IDocumentInventoryRepository
 {
     Task<IDocumentsInventory> GetDocumentInventory(CancellationToken ct);
     Task AddBusinessUser(BusinessUser user, CancellationToken ct);

@@ -5,9 +5,9 @@ using Storage.Domain;
 
 namespace Storage.Application.Commands;
 
-public record UploadFileCommand(string FileName, string FileType, Guid UserId, IFormFile File) : IRequest<Guid>;
+internal record UploadFileCommand(string FileName, string FileType, Guid UserId, IFormFile File) : IRequest<Guid>;
 
-public class UploadFileHandler(IFileMetadataRepository fileMetadata, IFileWriter fileWriter, IMediator mediator)
+internal class UploadFileHandler(IFileMetadataRepository fileMetadata, IFileWriter fileWriter, IMediator mediator)
     : IRequestHandler<UploadFileCommand, Guid>
 {
     public async Task<Guid> Handle(UploadFileCommand request, CancellationToken cancellationToken)

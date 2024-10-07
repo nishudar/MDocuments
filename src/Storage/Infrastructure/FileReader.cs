@@ -3,7 +3,7 @@ using Storage.Domain;
 
 namespace Storage.Infrastructure;
 
-public class FileReader : IFileReader
+internal class FileReader : IFileReader
 {
     private readonly string _storageDirectory;
 

@@ -1,6 +1,6 @@
 namespace Documents.Infrastructure.Clients.Storage.Models;
 
-public class FileDownloadResponse
+internal class FileDownloadResponse
 {
     public required Stream FileStream { get; init; }
     public required string ContentType { get; init; }

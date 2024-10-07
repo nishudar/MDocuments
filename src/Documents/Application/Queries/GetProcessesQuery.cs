@@ -4,11 +4,11 @@ using MediatR;
 
 namespace Documents.Application.Queries;
 
-public record GetProcessesQuery : IRequest<IEnumerable<Process>>
+internal record GetProcessesQuery : IRequest<IEnumerable<Process>>
 {
 }
 
-public class GetProcessesHandler(IDocumentInventoryRepository repository)
+internal class GetProcessesHandler(IDocumentInventoryRepository repository)
     : IRequestHandler<GetProcessesQuery, IEnumerable<Process>>
 {
     public async Task<IEnumerable<Process>> Handle(GetProcessesQuery request, CancellationToken cancellationToken)

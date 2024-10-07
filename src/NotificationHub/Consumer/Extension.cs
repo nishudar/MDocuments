@@ -1,6 +1,6 @@
 namespace NotificationHub.Consumer;
 
-public static class Extension
+internal static class Extension
 {
     public static void AddConsumerBackgroundService(this IServiceCollection services,
         ConfigurationManager configurationManager)

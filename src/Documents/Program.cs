@@ -26,7 +26,7 @@ builder.Services.AddMediatrWithPipelines(typeof(Program).Assembly);
 builder.Services.AddKafkaIntegrationEvents(kafkaUrl);
 
 builder.Services.AddDomainEventHandlers();
-builder.Services.AddInfrastructure(storageServiceUrl);
+builder.Services.AddInfrastructure(storageServiceUrl, kafkaUrl);
 
 var app = builder.Build();
 

@@ -2,7 +2,7 @@ using Storage.Domain;
 
 namespace Storage.Application.Interfaces;
 
-public interface IFileMetadataRepository
+internal interface IFileMetadataRepository
 {
     Task<FileMetadata?> GetFileMetadata(Guid fileId, CancellationToken ct);
     Task<IEnumerable<FileMetadata>> GetAllUserFileMetadata(Guid? userId, CancellationToken cancellationToken);
