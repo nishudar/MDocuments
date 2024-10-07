@@ -12,7 +12,7 @@ internal class BusinessUserAddedHandler(IUsersRepository repository, IMediator m
     public async Task Handle(BusinessUserAddedEvent user, CancellationToken cancellationToken)
     {
         await repository.AddBusinessUser(user.User, cancellationToken);
-        await mediator.Publish(new UserCreatedIntegrationEvent()
+        await mediator.Publish(new UserCreatedIntegrationEvent
         {
             UserId = user.User.Id,
             Name = user.User.Name,

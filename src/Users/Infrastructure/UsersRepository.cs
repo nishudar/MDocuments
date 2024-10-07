@@ -19,15 +19,14 @@ internal class UsersRepository : IUsersRepository
     
     public Task<Guid> AddBusinessUser(BusinessUser user, CancellationToken ct)
     {
-        var guid = Guid.NewGuid();
         Users.Add(new BusinessUser
         {
             Name = user.Name,
-            Id = guid,
+            Id = user.Id,
             Role = user.Role
         });
 
-        return Task.FromResult(guid);
+        return Task.FromResult(user.Id);
     }
 
     public Task UpdateBusinessUser(BusinessUser user, CancellationToken ct)
