@@ -1,5 +1,5 @@
 using Common.DomainEvents;
-using Common.IntegrationEvents.Kafka;
+using Common.IntegrationEvents.Infrastructure;
 using Common.Mediatr;
 using Common.Middleware;
 using Common.Seq;

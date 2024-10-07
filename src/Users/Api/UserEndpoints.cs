@@ -1,11 +1,11 @@
-﻿using Documents.Api.Models;
-using Documents.Application.Commands;
-using Documents.Application.Queries;
-using Documents.Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Users.Api.Models;
+using Users.Application.Commands;
+using Users.Application.Queries;
+using Users.Domain.Entities;
 
-namespace Documents.Api;
+namespace Users.Api;
 
 public static class UserEndpoints
 {
@@ -33,7 +33,7 @@ public static class UserEndpoints
                 return operation;
             });
 
-        app.MapPost("/v1/document/user", async (
+        app.MapPost("/v1/user", async (
                 [FromBody] AddUserModel businessUser,
                 IMediator mediator) =>
             {
@@ -49,12 +49,12 @@ public static class UserEndpoints
             .Produces(StatusCodes.Status400BadRequest)
             .WithOpenApi(operation =>
             {
-                operation.Summary = "Add a business user";
+                operation.Summary = "Add a business user. Replacement of the documents service/user. Was has not been tested yet";
                 operation.Description = "Adds a new business user to the document inventory.";
                 return operation;
             });
 
-        app.MapPatch("/v1/document/user/{userId:guid}", async (
+        app.MapPatch("/v1/user/{userId:guid}", async (
                 [FromBody] PatchUserRequest businessUser,
                 IMediator mediator,
                 Guid userId) =>
@@ -71,7 +71,7 @@ public static class UserEndpoints
             .Produces(StatusCodes.Status400BadRequest)
             .WithOpenApi(operation =>
             {
-                operation.Summary = "Update a business user";
+                operation.Summary = "Update a business user. Replacement of the documents service/user. Was has not been tested yet";
                 operation.Description = "Updates the information of an existing business user.";
 
                 return operation;

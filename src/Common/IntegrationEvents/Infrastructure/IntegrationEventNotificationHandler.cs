@@ -1,7 +1,7 @@
 ﻿using Common.IntegrationEvents.Events;
 using MediatR;
 
-namespace Common.IntegrationEvents.Kafka;
+namespace Common.IntegrationEvents.Infrastructure;
 
 public class IntegrationEventNotificationHandler<T>(IIntegrationEventProducer producer)
     : INotificationHandler<T> where T : IIntegrationEvent

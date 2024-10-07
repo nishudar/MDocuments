@@ -1,7 +1,7 @@
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Common.IntegrationEvents.Kafka;
+namespace Common.IntegrationEvents.Infrastructure;
 
 public static class Extensions
 {

@@ -4,7 +4,7 @@ using Common.IntegrationEvents.Events;
 using Confluent.Kafka;
 using Serilog;
 
-namespace Common.IntegrationEvents.Kafka;
+namespace Common.IntegrationEvents.Infrastructure;
 
 public class KafkaIntegrationEventProducer(string bootstrapServers) : IIntegrationEventProducer
 {

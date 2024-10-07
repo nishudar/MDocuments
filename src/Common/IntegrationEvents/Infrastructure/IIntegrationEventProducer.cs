@@ -1,6 +1,6 @@
 using Common.IntegrationEvents.Events;
 
-namespace Common.IntegrationEvents.Kafka;
+namespace Common.IntegrationEvents.Infrastructure;
 
 public interface IIntegrationEventProducer
 {

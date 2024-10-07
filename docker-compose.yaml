@@ -84,6 +84,22 @@ services:
     restart: unless-stopped
     depends_on:
       - storage-service
+
+  users-service:
+    build:
+      context: .
+      dockerfile: src/Users/Dockerfile
+    image: users-service
+    container_name: users-service
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+    ports:
+      - "8083:8080"
+    networks:
+      - md_services_network
+    restart: unless-stopped
+    depends_on:
+      - kafka
   
   notification-hub:
     build:
