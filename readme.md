@@ -10,9 +10,9 @@
 
 2. Then go to swagger link [swagger link](http://localhost:8082/swagger)
 
-3. add user with api call
-4. assign customer by api call
-5. start process for user/customer. You will get the process id and types of required documents
+3. add user with api call to users api
+4. assign customer by api call to users api
+5. start process for user/customer in documents api. You will get the process id and types of required documents
 7. upload document with user id, customer id and document type(the required one)
 8. each change process status will go through kafka to notification hub
 9. after uploading all document you will be able to run /finish endpoint on process
@@ -20,6 +20,7 @@
 ## System schema
 
 Here is the system architecture. The grayed out services were planned but not implemented
+![My Image Description](./docs/architecture.png)
 
 ```mermaid
 sequenceDiagram
@@ -31,7 +32,7 @@ sequenceDiagram
     participant NH as NotificationHub
     actor EU as EndUser
 
-    A->>US: Adding Operator
+    A->>US: POST /documents/add (Adding Operator)
     US->>K: Publish UserCreatedIntegrationEvent
     K->>DS: UserCreatedIntegrationEvent
     A->>US: POST /v1/add (Adding Customer)
