@@ -17,8 +17,32 @@
 8. each change process status will go through kafka to notification hub
 9. after uploading all document you will be able to run /finish endpoint on process
 
-
 ## System schema
 
 Here is the system architecture. The grayed out services were planned but not implemented
-![Architecture]([docs/schema.png](https://raw.githubusercontent.com/nishudar/MDocuments/refs/heads/main/docs/schema.jpg)
+
+```mermaid
+sequenceDiagram
+
+    actor A as Operator
+    participant US as UserService
+    participant K as Kafka
+    participant DS as DocumentsService
+    participant NH as NotificationHub
+    actor EU as EndUser
+
+    A->>US: Adding Operator
+    US->>K: Publish UserCreatedIntegrationEvent
+    K->>DS: UserCreatedIntegrationEvent
+    A->>US: POST /v1/add (Adding Customer)
+    US->>K: Publish UserCreatedIntegrationEvent
+    K->>DS: UserCreatedIntegrationEvent
+    A->>DS: POST /process/start
+    A->>DS: POST /documents/upload
+    A->>DS: POST /documents/upload
+    A->>DS: POST /documents/upload
+    A->>DS: POST /process/finish
+    DS->>K: Publish ProcessStatusUpdateIntegrationEvent
+    K->>NH: ProcessStatusUpdateIntegrationEvent
+    NH->>EU: Notify ProcessStatusUpdateIntegrationEvent
+```
