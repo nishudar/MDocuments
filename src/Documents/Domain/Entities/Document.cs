@@ -9,6 +9,7 @@ public class Document : Entity
     public Guid CustomerId { get; init; }
     public Guid UserId { get; init; }
     public Guid? FileId { get; private set; }
+    public Guid? ProcessId { get; set; }
 
     public void SetFileId(Guid fileId)
     {

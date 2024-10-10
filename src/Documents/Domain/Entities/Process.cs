@@ -1,17 +1,31 @@
 using Common.Abstracts;
 using Documents.Domain.Enums;
 using Documents.Domain.Exceptions;
-using Documents.Domain.ValueObjects;
 
 namespace Documents.Domain.Entities;
 
-public class Process : Entity, IProcess
+public class Process : Entity
 {
     public required Guid CustomerId { get; init; }
-    public required Guid BusinessUserId { get; init; }
-    public required List<Document> Documents { get; init; }
-    public required ICollection<DocumentType> AllowedDocumentTypes { get; init; }
-    public string Status { get; private set; }
+    public required Guid OperatorUserId { get; init; }
+    public required List<Document> Documents { get; init; } = [];
+    public List<ProcessDocumentType> AllowedDocumentTypes { get; set; } = [];
+
+    private string _status = ProcessStatus.Unset;
+    public string Status
+    {
+        get => _status;
+        set
+        {
+            if (!ProcessStatus.ProcessStatuses.Contains(value))
+                throw new ArgumentException(value);
+        
+            if (!AllDocumentsProvided() && value is ProcessStatus.Finished)
+                throw new ProcessCannotChangeStatusException("some documents were not provided", Id);
+
+            _status = value;
+        }
+    }
 
     public bool AllDocumentsProvided()
     {
@@ -19,17 +33,6 @@ public class Process : Entity, IProcess
             .Where(type => type.IsRequired)
             .All(type => Documents.Exists(
                 document => document.DocumenType == type.TypeName));
-    }
-
-    public void SetStatus(string status)
-    {
-        if (!ProcessStatus.ProcessStatuses.Contains(status))
-            throw new ArgumentException(status);
-        
-        if (!AllDocumentsProvided() && status is ProcessStatus.Finished)
-            throw new ProcessCannotChangeStatusException("some documents were not provided", Id);
-
-        Status = status;
     }
 
     public void AddDocument(Document document)
@@ -40,11 +43,11 @@ public class Process : Entity, IProcess
 
     public void ValidateDocument(Document document)
     {
-        if (document.UserId != BusinessUserId)
+        if (document.UserId != OperatorUserId)
             throw new InvalidUserIdException(document.UserId, document.Id);
         if (document.CustomerId != CustomerId)
             throw new InvalidUserIdException(document.CustomerId, document.Id);
-        var allowedDocumentType = AllowedDocumentTypes.FirstOrDefault(type => type.TypeName == document.DocumenType);
+        var allowedDocumentType = AllowedDocumentTypes.Find(type => type.TypeName == document.DocumenType);
         if (allowedDocumentType is null)
             throw new DocumentTypeNotAllowedException(document.DocumenType, Id);
         if (!allowedDocumentType.MultipleAllowed && Documents.Exists(d => d.DocumenType == document.DocumenType))

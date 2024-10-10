@@ -7,7 +7,7 @@ namespace Documents.Domain.Aggregates;
 internal interface IDocumentsInventory : IAggregate
 {
     Process StartProcess(Guid operatorId, Guid customerId);
-    void FinishProcess(Guid businessUserId, Guid customerId);
+    void FinishProcess(Guid operatorId, Guid customerId);
     void AbandonProcess(Guid operatorId, Guid customerId);
     public void AddUser(User user);
     public User UpdateUser(Guid userId, string name);

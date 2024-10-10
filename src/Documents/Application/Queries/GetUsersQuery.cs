@@ -1,20 +1,21 @@
 ﻿using Documents.Application.Interfaces;
 using Documents.Domain.Entities;
+using Documents.Infrastructure;
 using MediatR;
 
 namespace Documents.Application.Queries;
 
-internal record GetBusinessUsersQuery : IRequest<IEnumerable<User>>
+internal record GetUsersQuery : IRequest<IEnumerable<User>>
 {
 }
 
-internal class GetBusinessUsersHandler(IDocumentInventoryRepository repository)
-    : IRequestHandler<GetBusinessUsersQuery, IEnumerable<User>>
+internal class GetUsersHandler(IDocumentsUnitOfWork unitOfWork)
+    : IRequestHandler<GetUsersQuery, IEnumerable<User>>
 {
-    public async Task<IEnumerable<User>> Handle(GetBusinessUsersQuery request,
+    public async Task<IEnumerable<User>> Handle(GetUsersQuery request,
         CancellationToken cancellationToken)
     {
-        var documentInventory = await repository.GetDocumentInventory(cancellationToken);
+        var documentInventory = await unitOfWork.GetDocumentInventory(cancellationToken);
         var users = documentInventory.GetUsers();
 
         return users;

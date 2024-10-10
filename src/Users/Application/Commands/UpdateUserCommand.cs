@@ -2,22 +2,23 @@
 using MediatR;
 using Users.Application.Interfaces;
 using Users.Domain.Entities;
+using Users.Infrastructure;
 
 namespace Users.Application.Commands;
 
-internal record UpdateBusinessUserCommand(Guid UserId, string Name) : IRequest<BusinessUser>;
+internal record UpdateUserCommand(Guid UserId, string Name) : IRequest<User>;
 
-internal class UpdateBusinessUserCommandHandler(
+internal class UpdateUserCommandHandler(
     IDomainEventDispatcher dispatcher,
-    IUsersRepository repository)
-    : IRequestHandler<UpdateBusinessUserCommand, BusinessUser>
+    IUsersUnitOfWork unitOfWork)
+    : IRequestHandler<UpdateUserCommand, User>
 {
-    public async Task<BusinessUser> Handle(UpdateBusinessUserCommand command, CancellationToken cancellationToken)
+    public async Task<User> Handle(UpdateUserCommand command, CancellationToken cancellationToken)
     {
-        var usersInventory = await repository.GetUsersInventory(cancellationToken);
-        var businessUser = await usersInventory.UpdateBusinessUser(command.UserId, command.Name);
+        var usersInventory = await unitOfWork.GetUsersInventory(cancellationToken);
+        var user = await usersInventory.UpdateUser(command.UserId, command.Name);
         await dispatcher.DispatchEvents(usersInventory.BusinessEvents, cancellationToken);
 
-        return businessUser;
+        return user;
     }
 }

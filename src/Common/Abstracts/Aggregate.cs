@@ -15,7 +15,7 @@ public abstract class Aggregate : IAggregate
     public Guid Id { get; init; }
     public ICollection<IDomainEvent> BusinessEvents => _businessEvents.ToArray();
 
-    protected void AddBusinessEvent(IDomainEvent businessEvent)
+    protected void PublishBusinessEvent(IDomainEvent businessEvent)
     {
         _businessEvents.Add(businessEvent);
     }

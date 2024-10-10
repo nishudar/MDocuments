@@ -2,6 +2,7 @@
 using Documents.Api.Models;
 using Documents.Application.Interfaces;
 using Documents.Domain.Entities;
+using Documents.Infrastructure;
 using MediatR;
 
 namespace Documents.Application.Commands;
@@ -10,7 +11,7 @@ internal record UploadDocumentCommand(DocumentUploadModel UploadedModel) : IRequ
 
 internal class UploadDocumentHnandler(
     IDomainEventDispatcher dispatcher,
-    IDocumentInventoryRepository repository,
+    IDocumentsUnitOfWork unitOfWork,
     IStorageService storageService)
     : IRequestHandler<UploadDocumentCommand, Guid>
 {
@@ -19,7 +20,7 @@ internal class UploadDocumentHnandler(
         //Here i'd call user & consumer domain services to verify the users
 
         var upload = request.UploadedModel;
-        var documentInventory = await repository.GetDocumentInventory(cancellationToken);
+        var documentInventory = await unitOfWork.GetDocumentInventory(cancellationToken);
         var document = new Document
         {
             Id = Guid.NewGuid(),

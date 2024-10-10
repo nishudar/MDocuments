@@ -29,6 +29,7 @@ builder.Services.AddDomainEventHandlers();
 builder.Services.AddInfrastructure(storageServiceUrl, kafkaUrl);
 
 var app = builder.Build();
+app.UseInfrastructure();
 
 app.UseCommonMiddleware();
 
@@ -43,3 +44,4 @@ app.MapDocumentsEndpoints(operationTimeout);
 app.MapUserEndpoints(operationTimeout);
 
 await app.RunAsync();
+

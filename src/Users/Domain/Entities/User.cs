@@ -6,7 +6,7 @@ using Users.Domain.Exceptions;
 
 namespace Users.Domain.Entities;
 
-internal class BusinessUser : Entity
+internal class User : Entity
 {
     private string _name;
 

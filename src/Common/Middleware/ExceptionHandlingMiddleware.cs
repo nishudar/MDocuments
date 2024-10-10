@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Text.Json;
 using Common.Abstracts;
 using Microsoft.AspNetCore.Http;
@@ -20,7 +21,8 @@ public class ExceptionHandlingMiddleware(RequestDelegate next)
                 Title = "Business rule validation",
                 Detail = ex.Message,
                 Status = StatusCodes.Status400BadRequest,
-                Instance = context.Request.Path
+                Instance = context.Request.Path,
+                Type = ex.GetType().ToString()
             };
 
             context.Response.StatusCode = StatusCodes.Status400BadRequest;
@@ -31,10 +33,11 @@ public class ExceptionHandlingMiddleware(RequestDelegate next)
         }
         catch (Exception ex)
         {
+            ex = ex.Demystify();
             var problemDetails = new ProblemDetails
             {
                 Title = "Internal server error",
-                Detail = ex.Message,
+                Detail = ex.Message + ex.StackTrace,
                 Status = StatusCodes.Status500InternalServerError,
                 Instance = context.Request.Path
             };

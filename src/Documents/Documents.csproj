@@ -9,11 +9,17 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="Ben.Demystifier" Version="0.4.1" />
         <PackageReference Include="DeepCloner" Version="0.10.4"/>
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.8"/>
         <PackageReference Include="Refit" Version="7.2.1"/>
         <PackageReference Include="Refit.HttpClientFactory" Version="7.2.1"/>
         <PackageReference Include="Swashbuckle.AspNetCore" Version="6.8.1"/>
+
+        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.10" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="8.0.10" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Abstractions" Version="8.0.10" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="8.0.10" />
     </ItemGroup>
 
     <ItemGroup>

@@ -18,14 +18,14 @@ internal static class UserEndpoints
                 IMediator mediator) =>
             {
                 using var cts = new CancellationTokenSource(timeout);
-                var users = await mediator.Send(new GetBusinessUsersQuery(), cts.Token);
+                var users = await mediator.Send(new GetUsersQuery(), cts.Token);
 
                 return Results.Ok(users);
             })
             .DisableAntiforgery()
             .WithName("getUsers")
             .WithTags(TagUsers)
-            .Produces<IEnumerable<BusinessUser>>()
+            .Produces<IEnumerable<User>>()
             .Produces(StatusCodes.Status400BadRequest)
             .WithOpenApi(operation =>
             {
@@ -35,13 +35,13 @@ internal static class UserEndpoints
             });
 
         app.MapPost("/v1/user", async (
-                [FromBody] AddUserModel businessUser,
+                [FromBody] AddUserModel user,
                 IMediator mediator) =>
             {
                 using var cts = new CancellationTokenSource(timeout);
-                var user = await mediator.Send(new AddBusinessUserCommand(businessUser.Name, businessUser.Role), cts.Token);
+                var userResult = await mediator.Send(new AddUserCommand(user.Name, user.Role), cts.Token);
 
-                return Results.Ok(new IdResponse(user.Id));
+                return Results.Ok(new IdResponse(userResult.Id));
             })
             .DisableAntiforgery()
             .WithName("addUser")
@@ -56,12 +56,12 @@ internal static class UserEndpoints
             });
 
         app.MapPatch("/v1/user/{userId:guid}", async (
-                [FromBody] PatchUserRequest businessUser,
+                [FromBody] PatchUserRequest user,
                 IMediator mediator,
                 Guid userId) =>
             {
                 using var cts = new CancellationTokenSource(timeout);
-                await mediator.Send(new UpdateBusinessUserCommand(userId, businessUser.Name), cts.Token);
+                await mediator.Send(new UpdateUserCommand(userId, user.Name), cts.Token);
 
                 return Results.NoContent();
             })

@@ -9,4 +9,10 @@ public sealed class ProcessNotFoundException() : BusinessException("Process for 
         Data[nameof(customerId)] = customerId;
         Data[nameof(userId)] = userId;
     }
+    
+    public ProcessNotFoundException(Guid processId) : this()
+    {
+        Data[nameof(processId)] = processId;
+    }
 }
+

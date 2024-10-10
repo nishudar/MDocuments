@@ -1,5 +1,4 @@
 using Common.DomainEvents;
-using Documents.Domain.Entities;
 
 namespace Documents.Domain.Events;
 

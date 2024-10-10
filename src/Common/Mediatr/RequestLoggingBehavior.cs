@@ -17,10 +17,10 @@ public class RequestLoggingBehavior<TRequest, TResponse>(ILogger<RequestLoggingB
         else
             requestTypeString = "request";
 
-        logger.LogDebug("{Assembly} service Handling {RequestTypeString}: {RequestName} {@Request}",
+        logger.LogDebug("{Assembly} service handling {RequestTypeString}: {RequestName} {@Request}",
             request.GetType().Assembly.GetName().Name, requestTypeString, typeof(TRequest).Name, request);
         var response = await next();
-        logger.LogInformation("{Assembly} service Finished handling {RequestTypeString}: {RequestName} {@Response}",
+        logger.LogInformation("{Assembly} service finished handling {RequestTypeString}: {RequestName} {@Response}",
             request.GetType().Assembly.GetName().Name, requestTypeString, typeof(TRequest).Name, response);
 
         return response;

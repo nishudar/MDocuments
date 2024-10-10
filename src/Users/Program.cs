@@ -28,6 +28,8 @@ builder.Services.AddInfrastructure();
 
 var app = builder.Build();
 
+app.UseInfrastructure();
+
 app.UseCommonMiddleware();
 
 app.UseSwagger();

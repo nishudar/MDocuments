@@ -2,13 +2,14 @@ using Common.DomainEvents;
 using Documents.Application.Interfaces;
 using Documents.Domain.Events;
 
-namespace Documents.Application.EventHandlers;
+namespace Documents.Application.DomainEventHandlers;
 
-internal class BusinessUserAddedHandler(IDocumentInventoryRepository repository)
+internal class UserAddedHandler(IDocumentsUnitOfWork unitOfWork)
     : IDomainEventHandler<UserAddedEvent>
 {
     public async Task Handle(UserAddedEvent user, CancellationToken cancellationToken)
     {
-        await repository.AddUser(user.User, cancellationToken);
+        unitOfWork.AddUser(user.User);
+        await unitOfWork.SaveChanges(cancellationToken);
     }
 }

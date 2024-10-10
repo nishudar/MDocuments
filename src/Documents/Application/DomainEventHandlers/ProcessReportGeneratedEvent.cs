@@ -1,7 +1,7 @@
 using Common.DomainEvents;
 using Documents.Domain.Events;
 
-namespace Documents.Application.EventHandlers;
+namespace Documents.Application.DomainEventHandlers;
 
 internal class ProcessReportGeneratedEventHandler(ILogger<ProcessReportGeneratedEventHandler> logger)
     : IDomainEventHandler<ProcessReportGeneratedEvent>

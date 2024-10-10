@@ -6,7 +6,7 @@ namespace Documents.Api;
 
 internal static class UserEndpoints
 {
-    private const string TagBusinessUsers = "Users";
+    private const string TagUsers = "Users";
 
     public static void MapUserEndpoints(this IEndpointRouteBuilder app, TimeSpan timeout)
     {
@@ -14,13 +14,13 @@ internal static class UserEndpoints
                 IMediator mediator) =>
             {
                 using var cts = new CancellationTokenSource(timeout);
-                var users = await mediator.Send(new GetBusinessUsersQuery(), cts.Token);
+                var users = await mediator.Send(new GetUsersQuery(), cts.Token);
 
                 return Results.Ok(users);
             })
             .DisableAntiforgery()
             .WithName("getUsers")
-            .WithTags(TagBusinessUsers)
+            .WithTags(TagUsers)
             .Produces<IEnumerable<User>>()
             .Produces(StatusCodes.Status400BadRequest)
             .WithOpenApi(operation =>

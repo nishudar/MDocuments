@@ -1,5 +1,4 @@
 ﻿using Common.DomainEvents;
-using Common.IntegrationEvents.Events;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
@@ -22,9 +21,9 @@ public class NotificationLoggingBehavior<TNotification, TResponse>(ILogger<Notif
             }
             default:
             {
-                logger.LogDebug("{Assembly} service handling event:  {NotificationName} {@Notification}", request.GetType().Assembly.GetName().Name,  typeof(TNotification).Name, request);
+                logger.LogDebug("{Assembly} service handling command:  {NotificationName} {@Notification}", request.GetType().Assembly.GetName().Name,  typeof(TNotification).Name, request);
                 var response = await next();
-                logger.LogInformation("{Assembly} service finished handling event: {NotificationName} {@Response}", request.GetType().Assembly.GetName().Name, typeof(TNotification).Name, response);
+                logger.LogInformation("{Assembly} service finished handling command: {NotificationName} {@Response}", request.GetType().Assembly.GetName().Name, typeof(TNotification).Name, response);
                 return response;
             }
         }

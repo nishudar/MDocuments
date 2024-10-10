@@ -4,20 +4,24 @@ using Documents.Application.Interfaces;
 using Documents.Domain.Events;
 using MediatR;
 
-namespace Documents.Application.EventHandlers;
+namespace Documents.Application.DomainEventHandlers;
 
 internal class ProcessChangedStatusEventHandler(
-    IDocumentInventoryRepository repository,
+    IDocumentsUnitOfWork unitOfWork,
     IMediator mediator)
     : IDomainEventHandler<ProcessChangedStatusEvent>
 {
     public async Task Handle(ProcessChangedStatusEvent domainEvent, CancellationToken cancellationToken)
     {
         var process = domainEvent.Process;
-        await repository.UpdateProcessStatus(process, cancellationToken);
+        await unitOfWork.UpdateProcessStatus(process, cancellationToken);
+        await unitOfWork.SaveChanges(cancellationToken);
 
         await mediator.Publish(
-            new ProcessStatusUpdateIntegrationEvent(process.Id, process.BusinessUserId, process.CustomerId,
-                process.Status.ToString()), cancellationToken);
+            new ProcessStatusUpdateIntegrationEvent(process.Id,
+                process.OperatorUserId,
+                process.CustomerId,
+                process.Status), 
+            cancellationToken);
     }
 }
