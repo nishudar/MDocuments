@@ -27,13 +27,13 @@ public class KafkaIntegrationEventProducer(string bootstrapServers) : IIntegrati
         await producer.ProduceAsync(topic, message, cancellationToken);
     }
 
-    public async Task Publish<T>(
+    public async Task Publish<T>( 
         T? eventObject,
         string key,
         string eventType,
         string topic,
         CancellationToken cancellationToken)
-        where T : IIntegrationEvent
+        where T : IIntegrationEvent? 
     {
         try
         {
@@ -57,11 +57,11 @@ public class KafkaIntegrationEventProducer(string bootstrapServers) : IIntegrati
         }
     }
 
-    private sealed class IntegrationEventSerializer<T> : ISerializer<T> where T : IIntegrationEvent
+    private sealed class IntegrationEventSerializer<T> : ISerializer<T> where T : IIntegrationEvent?
     {
         public byte[] Serialize(T? data, SerializationContext context)
         {
-            return Equals(data, default(T)) ? [] : JsonSerializer.SerializeToUtf8Bytes(data, data.GetType());
+            return Equals(data, default(T)) ? [] : JsonSerializer.SerializeToUtf8Bytes(data, data!.GetType());
         }
     }
 }

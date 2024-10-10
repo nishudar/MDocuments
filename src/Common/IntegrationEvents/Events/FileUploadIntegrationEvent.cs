@@ -7,6 +7,6 @@ public record FileUploadIntegrationEvent : IIntegrationEvent
     public required string FileType { get; init; }
     public required string UserId { get; init; }
     public required DateTime UploadTime { get; init; }
-    public string Status { get; set; }
+    public required string Status { get; set; }
     public string Topic => IntegrationTopics.FileUploadsTopic;
 }

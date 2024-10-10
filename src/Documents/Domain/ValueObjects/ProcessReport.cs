@@ -6,7 +6,7 @@ public record ProcessReport(
     Guid? CustomerId,
     string UserName,
     string CustomerName,
-    IReadOnlyCollection<string> RequiredDocuments,
+    string?[] RequiredDocuments,
     IReadOnlyCollection<DocumentWithType> ProvidedDocuments
 );
 
