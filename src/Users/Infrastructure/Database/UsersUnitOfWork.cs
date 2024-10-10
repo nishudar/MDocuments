@@ -4,7 +4,7 @@ using Users.Application.Interfaces;
 using Users.Domain.Entities;
 using Users.Domain.Exceptions;
 
-namespace Users.Infrastructure.Db;
+namespace Users.Infrastructure.Database;
 
 
 internal class UsersUnitOfWork(UsersServiceContext ctx) : EfUnitOfWork<UsersServiceContext>(ctx), IUsersUnitOfWork

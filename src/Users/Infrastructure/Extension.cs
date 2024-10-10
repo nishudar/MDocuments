@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Users.Application.Interfaces;
 using Users.Domain.Aggregates;
-using Users.Infrastructure.Db;
+using Users.Infrastructure.Database;
 
 namespace Users.Infrastructure;
 

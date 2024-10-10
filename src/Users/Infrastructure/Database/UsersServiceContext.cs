@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Users.Domain.Entities;
 
-namespace Users.Infrastructure.Db;
+namespace Users.Infrastructure.Database;
 
 internal class UsersServiceContext(DbContextOptions<UsersServiceContext> options) : DbContext(options)
 {
