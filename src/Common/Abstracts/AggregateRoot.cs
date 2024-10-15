@@ -2,14 +2,14 @@ using Common.DomainEvents;
 
 namespace Common.Abstracts;
 
-public interface IAggregate
+public interface IAggregateRoot
 {
     Guid Id { get; init; }
 
     ICollection<IDomainEvent> BusinessEvents { get; }
 }
 
-public abstract class Aggregate : IAggregate
+public abstract class AggregateRootRoot : IAggregateRoot
 {
     private readonly List<IDomainEvent> _businessEvents = [];
     public Guid Id { get; init; }

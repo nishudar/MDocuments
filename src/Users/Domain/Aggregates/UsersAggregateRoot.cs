@@ -6,8 +6,8 @@ using Users.Domain.Exceptions;
 
 namespace Users.Domain.Aggregates;
 
-internal class UsersInventory(ICollection<User> users)
-    : Aggregate, IUsersInventory
+internal class UsersAggregateRoot(ICollection<User> users)
+    : AggregateRootRoot, IUsersAggregateRoot
 {
     private List<User> Users { get; } = users.ToList();
     

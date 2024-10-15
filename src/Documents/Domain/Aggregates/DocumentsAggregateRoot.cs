@@ -8,11 +8,11 @@ using Force.DeepCloner;
 
 namespace Documents.Domain.Aggregates;
 
-internal class DocumentsInventory(
+internal class DocumentsAggregateRoot(
     ICollection<User> users,
     ICollection<DocumentType> documentTypes,
     ICollection<Process> processes)
-    : Aggregate, IDocumentsInventory
+    : AggregateRootRoot, IDocumentsAggregateRoot
 {
     private List<User> Users { get; } = users.ToList();
     private List<DocumentType> AllowedDocumentTypes { get; } = documentTypes.ToList();

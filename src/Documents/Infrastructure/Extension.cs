@@ -41,12 +41,12 @@ internal static class Extension
         dbContext.Database.EnsureCreated();
     }
     
-    public static async Task<IDocumentsInventory> GetDocumentInventory(this IDocumentsUnitOfWork unitOfWork, CancellationToken ct = default)
+    public static async Task<IDocumentsAggregateRoot> GetDocumentInventory(this IDocumentsUnitOfWork unitOfWork, CancellationToken ct = default)
     {
         var users = await unitOfWork.GetUsers(ct);
         var allowedDocumentTypes = await unitOfWork.GetDocumentTypes(ct);
         var processes = await unitOfWork.GetProcesses(ct);
 
-        return new DocumentsInventory(users, allowedDocumentTypes, processes);
+        return new DocumentsAggregateRoot(users, allowedDocumentTypes, processes);
     }
 }

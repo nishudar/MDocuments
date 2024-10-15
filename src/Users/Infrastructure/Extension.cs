@@ -25,10 +25,10 @@ internal static class Extension
     }
     
     
-    public static async Task<IUsersInventory> GetUsersInventory(this IUsersUnitOfWork unitOfWork, CancellationToken ct = default)
+    public static async Task<IUsersAggregateRoot> GetUsersInventory(this IUsersUnitOfWork unitOfWork, CancellationToken ct = default)
     {
         var users = await unitOfWork.GetUsers(ct);
 
-        return new UsersInventory(users);
+        return new UsersAggregateRoot(users);
     }
 }
